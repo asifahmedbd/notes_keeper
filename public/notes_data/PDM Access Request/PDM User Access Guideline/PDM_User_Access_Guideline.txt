@@ -1,0 +1,15 @@
+Subject: PDM User Access Guideline
+From: 
+Created: 10/04/2023 12:35:12 PM ZE6
+
+--- CONTENT ---
+Detail level description of the access model in PDM 
+
+
+
+Documents (Latest on top)
+Date/Updated By
+Comments
+
+2023-11-03 / Mikael Andersson
+First version to end users, content has to be verified and additional informaton added

@@ -1,0 +1,13 @@
+Subject: How to gather training feedback from training sessions
+From: 
+Created: 04/28/2003 07:29:11 PM ZE6
+
+--- CONTENT ---
+The feedback from every PDM training session is collected into the Training feedback –Lotus Notes database. The database is created not only to gather feedback from PDM training but all training arranged in Metso Paper. Feedback is collected to evaluate the quality of PDM training sessions. The Training feedback database is managed by Industrial Learning Space in Rautpohja, Jyväskylä. 
+Every business sites spokesperson will take care of feedback gathering so its important that you inform your sites spokesperson when you are arranging a PDM training session. You should give to him/her following information:
+·	Your name, site and department
+·	Course name and target group 
+·	Course duration, dates and times, venue, prices (if there is), 
+·	Names, e-mails and departments of the participants
+
+Spokespersons in different sites:

@@ -1,0 +1,72 @@
+Subject: Common PDM tools
+From: 
+Created: 10/17/2006 04:50:45 PM ZE6
+
+--- CONTENT ---
+Common tools in MPIT tools kit database :
+
+
+
+E.g. 
+
+
+
+
+
+Subject
+Date
+Author
+
+
+
+                        PDM tools updating instructions 
+2002-06-04
+Pasi Knuutinen
+
+
+
+                                    Generic import / export Excel template 
+2003-10-17
+Pasi Knuutinen
+
+
+
+                                    XSLT filter for listing all items from an XML file 
+2005-08-02
+Pasi Knuutinen
+
+
+
+                                                Customer XML translator tool 
+2003-09-24
+Pasi Knuutinen
+
+
+
+                                                Excel Customer BOM reporting tool 
+2004-11-04
+Pasi Knuutinen
+
+
+
+                                                Excel Engineer BOM reporting tool 
+2005-04-08
+Hannu Simila
+
+
+
+                                                List of Devices 
+2005-01-12
+Jouko Ahti
+
+
+
+                                                Pressure Vessel, Material Certificate and Purchase Instruction report - Excel tool 
+2005-01-26
+Petri Lahdenaho
+
+
+
+                                    Himmeli - Spare part package application 
+2004-04-07
+Pasi Knuutinen

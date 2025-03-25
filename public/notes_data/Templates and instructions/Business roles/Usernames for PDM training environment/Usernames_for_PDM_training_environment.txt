@@ -1,0 +1,46 @@
+Subject: Usernames for PDM training environment
+From: 
+Created: 10/17/2002 03:04:33 PM ZE6
+
+--- CONTENT ---
+
+WIN 
+
+Local system administrator WIN
+
+Translator WIN
+
+Model engineer WIN1
+....
+Model engineer WIN9
+
+Project engineer WIN1
+....
+Project engineer WIN9
+
+Logistics engineer WIN1
+...
+Logistics engineer WIN9
+
+ROH
+
+Local System administrator ROH
+
+Translator ROH
+
+Model engineer ROH1
+...
+Model engineer ROH9
+
+Project engineer ROH1
+...
+Project engineer ROH9
+
+Logistics engineer ROH1
+.....
+Logistics engineer ROH9
+
+
+
+
+Link to training environment: http://mgtpdma3.rau.valmet.com:7001/metso/

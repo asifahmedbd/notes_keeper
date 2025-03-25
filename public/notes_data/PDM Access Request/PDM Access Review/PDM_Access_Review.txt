@@ -1,0 +1,17 @@
+Subject: PDM Access Review
+From: 
+Created: 10/04/2023 12:24:26 PM ZE6
+
+--- CONTENT ---
+Guideline how to perform the Access Review and to give an Overview of the Access Control elements in PDM.
+
+This for the Managers when there is a system Access Review for their subordinates sent out from Valmet security team.
+
+
+
+Documents (Latest on top)
+Date/Updated By
+Comments
+
+2023-10-06 / Pin Jin / Mikael Andersson
+

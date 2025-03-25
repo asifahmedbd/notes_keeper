@@ -1,0 +1,16 @@
+Subject: Description on PDM Entitlements in IDefix
+From: 
+Created: 10/06/2023 01:41:38 PM ZE6
+
+--- CONTENT ---
+This is an export from IDefix with description on the available PDM Entitlements to select, i.e. the Data Access control elements i PDM.
+
+(When performing access review by managers in IDefix, the same information can be found below the Information icon for each entitlement in IDefix.)
+
+
+Documents(Latest on top)
+Date/Updated By
+Comments
+
+2023-10-06/Mikael Andersson
+

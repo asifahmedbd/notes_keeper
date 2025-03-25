@@ -1,0 +1,48 @@
+Subject: PDM Access - Owner group and corresponding viewing group list
+From: 
+Created: 09/19/2018 06:30:59 PM ZE6
+
+--- CONTENT ---
+This document is showing what Owner Groups are included in each Viewer Group and who are the Owners/Approvers for these OGs and VGs in IDefix.
+
+
+Documents(Latest on top)
+Date/Updated By
+Comments
+
+2024-11-15/Mikael Andersson
+Status as per October 1, 2024
+
+2023-10-04/Mikael Andersson
+
+
+
+
+
+
+Please find the details access model what kind of PPM access needed to access to edit or view data...
+
+Cross reference table in excel will soon be updated in this document - Due date October 31
+
+
+
+Documents(Latest on top)
+Date/Updated By
+Comments
+
+13 December 2018/Mozammel
+Added System help
+
+26 October 2018/Mozammel
+Initial document
+
+Technical document to generate the report()
+Note: Not for end user
+
+Documents(Latest on top)
+Date/Updated By
+Comments
+
+20 December 2018/Mozammel
+Initial technical document
+

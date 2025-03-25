@@ -1,0 +1,8 @@
+Subject: System help
+From: 
+Created: 05/24/2002 12:58:00 PM ZE6
+
+--- CONTENT ---
+Training environment:
+http://mgtpdma3.rau.valmet.com:7001/metso/omentree/omentree.html
+

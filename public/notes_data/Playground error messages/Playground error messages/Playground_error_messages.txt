@@ -1,0 +1,38 @@
+Subject: Playground error messages
+From: 
+Created: 05/21/2013 02:27:14 PM ZE6
+
+--- CONTENT ---
+
+
+Error message
+User ID's
+How to reproduce?
+Drawing link to Sovelia doesn't work. Open the same Sovelia page as with LTVF.
+
+
+"Transfer Items to ERP" gives an error message when sending items from ET-OL. Notification about the transfer is not sent to user but it is sent to Notes database.
+project.engineer.coa1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

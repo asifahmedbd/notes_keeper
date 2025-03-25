@@ -1,0 +1,59 @@
+Subject: How to get access to PDM
+From: 
+Created: 12/01/2021 06:37:18 PM ZE6
+
+--- CONTENT ---
+Instructions how to apply for access in Idefix
+
+
+Document (Latest update on top)
+Modified date/Editor
+Comment
+Change required
+
+2023-10-06/Mikael Andersson
+Links to related and relevant documents is added in the file document.The same and some Additional links kan be found below here in this Lotus Notes Document.
+
+
+2023-03-31/Mikael Andersson
+The New Entitlement Type "User Account" in IDefiix has been added to the Instruction. New Enitlement Value "Inactive Account" was added. "PDM User ID" and "China PDM User ID" moved from Special Rights, ERP Company. Changes and Improvments Highlighted in Yellow.
+
+
+2022-01-24/Mikael Andersson
+Single select for Business Role is updated according Idefix interface
+
+
+2021-03-04/Masudul Haque
+Note! Latest change in Idefix regarding the Business Role selection is not updated in this document. Only one single Main Business Role can be selected in Idefix, which is according PDM WTO rule. Document will be updated accordingly.
+2022-01-22/Mikael Andersson: Update document regarding Entitlement Type "Business Role" that is Single select in Idefix.
+
+Go to Idefix => Request Home (valmet.com) 
+
+Related Douments
+
+
+Link
+Subject
+Description / Purpose
+Comment
+
+Description on PDM Business Roles 
+Detailed description on Business Roles 
+Same link exist in the file document above
+
+Description on PDM Entitlements in IDefix 
+This is an export from IDefix with description on the available PDM Entitlements to select, i.e. the Data Access control elements i PDM.
+Same link exist in the file document above
+
+PDM Access - Owner group and corresponding viewing group list 
+This document is showing what Owner Groups are included in each Viewier Group
+Same link exist in the file document above
+
+PDM User Access Guideline 
+Detail level description of the access model in PDM 
+Same link exist in the file document above
+
+PDM Access Review 
+Guideline how to perform the Access Review by Managers for there subordinates
+
+

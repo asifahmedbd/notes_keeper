@@ -1,0 +1,19 @@
+Subject: Description on PDM Business Roles
+From: 
+Created: 06/17/2022 05:39:38 AM ZE6
+
+--- CONTENT ---
+
+
+Document (Latest update on top)
+Modified date/Editor
+Comment
+Change required
+
+2022-06-30/Mikael Andersson
+New order of slides - Information were to find BR and Special Rights in Idefix is now together with descriptions of the actual BR's and Special Rights.
+
+
+2022-06-17/Mikael Andersson
+Description on available Business Roles which defines the role and access level
+

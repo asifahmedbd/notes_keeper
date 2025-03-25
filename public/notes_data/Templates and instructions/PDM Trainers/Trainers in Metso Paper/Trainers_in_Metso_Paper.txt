@@ -1,0 +1,109 @@
+Subject: Trainers in Metso Paper
+From: 
+Created: 11/17/2002 08:05:09 PM ZE6
+
+--- CONTENT ---
+
+This document is made to list all the PDM trainers and their training areas. If you notice false information in this document or you see that there is missing information, please contact Jussi Eskelinen.
+
+
+Business/name of trainer
+Training areas
+
+
+RFS/WIN
+
+Jan Bergbom 
+All engineering trainings, system overview
+
+
+COA
+
+Marika Ahonen
+Project engineering, system overview
+
+
+CAL
+
+Harri Siimes
+Mech. Engineering
+Olavi Äikäs
+Mech. Engineering
+Ari Saari
+Mech./Aut. Engineering
+Raimo Lauren
+Aut. Engineering
+Jukka Peltola
+Aut. Engineering
+
+
+RFS/ROH
+
+Ville Halonen
+Project engineering, CIM
+
+
+
+
+VLK
+
+Reijo Peltonen 
+CIM
+Ahti Alavataja
+CIM 
+
+
+POR
+
+
+
+Juha Raitanen
+CIM
+Juha koskela / SER
+CIM
+Ville Grönroos / PDU
+CIM 
+Petteri Uusitalo / PDU 
+CIM
+Arto Viitala / WHL
+CIM
+Timo Pohjola / WHL
+CIM
+
+
+SDL
+
+Lars Norlin
+CIM 
+Lars Olsen
+CIM
+Bozorgmehr Gheibi
+CIM
+Bo Östberg
+CIM
+Håkan Byström
+CIM
+Anders Lassfolk
+CIM
+
+
+PMM
+
+
+
+
+
+MPIT
+
+Mika Niiniaho
+All kind of PDM training
+
+
+
+
+TOP
+
+Jussi Eskelinen
+Overview & System overview
+
+

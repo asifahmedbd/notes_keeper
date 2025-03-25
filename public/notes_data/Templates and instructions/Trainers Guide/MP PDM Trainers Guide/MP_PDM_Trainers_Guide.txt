@@ -1,0 +1,13 @@
+Subject: MP PDM Trainers Guide
+From: 
+Created: 09/25/2002 06:01:24 PM ZE6
+
+--- CONTENT ---
+This documents purpose is to support and instruct all PDM trainers. 
+
+
+
+Please contact Jussi Eskelinen (jussi.eskelinen@metso.com) or Aki Kokkinen (aki.kokkinen@metso.com) in case of additions or changes.
+
+Common usernames: 
+Training material creation and maintenance guidelines: 
