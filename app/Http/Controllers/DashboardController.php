@@ -147,5 +147,4 @@ class DashboardController extends Controller {
         return LaravelFileViewer::show($filename,$filepath,$file_url);
     }
 
-
 }

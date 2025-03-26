@@ -62,6 +62,11 @@
 <script src="{{ asset('js/officeToHtml.js') }}?v={{ time() }}"></script>
 <link rel="stylesheet" href="{{ asset('css/officeToHtml.css') }}">
 
+<div class="row mb-3">
+    <div class="col text-end">
+        <a href="{{ route('memo.create') }}" class="btn btn-primary">New Memo</a>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-5">
@@ -172,7 +177,10 @@
 
                                 // Display the folder details
                                 let folderDetailsHtml = `
-                                    <h5>Folder: ${node.title}</h5>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5>Folder: ${node.title}</h5>
+                                        <button class="btn btn-sm btn-warning edit-memo-btn" data-folder-id="${node.key}">Edit Memo</button>
+                                    </div>
                                     <p><strong>Date:</strong> ${response.folder_created_on ?? "N/A"}</p>
                                     <p><strong>Creator:</strong> ${response.folder_created_by ?? "Unknown"}</p>
                                     <p><strong>Description:</strong> ${response.description ?? "No description available"}</p>
@@ -181,7 +189,7 @@
                                 // Check if there are files in the response
                                 if (response.folder_files && response.folder_files.length > 0) {
                                     folderDetailsHtml += `
-                                        <h6>Files:</h6>
+                                        <h4>Files:</h4>
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
@@ -221,6 +229,32 @@
                                             </tbody>
                                         </table>
                                     `;
+
+                                     // Add Document Information Section
+                                    folderDetailsHtml += `
+                                        <h4>Document Information:</h4>
+                                        <table class="table table-bordered">
+                                            <tbody>
+                                                <tr>
+                                                    <th>Status</th>
+                                                    <td>${response.document_status ?? "Draft"}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Category</th>
+                                                    <td>${response.document_category ?? "PDM Access Request"}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Keywords</th>
+                                                    <td>${response.document_keywords ?? "PDM"}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Last Updated</th>
+                                                    <td>${response.document_last_updated ?? "N/A"}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    `;
+
                                 } else {
                                     folderDetailsHtml += `<p>No files available in this folder.</p>`;
                                 }
