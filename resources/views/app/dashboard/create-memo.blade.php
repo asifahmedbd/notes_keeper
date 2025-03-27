@@ -114,12 +114,7 @@
                 <!-- Unit Dropdown -->
                 <div class="col-md-4">
                     <label for="unit" class="form-label">Unit</label>
-                    <select class="form-select form-control" id="unit" name="unit" required>
-                        <option value="HR">HR</option>
-                        <option value="Finance">Finance</option>
-                        <option value="IT">IT</option>
-                        <option value="Operations">Operations</option>
-                    </select>
+                    <input type="text" class="form-control" id="unit" name="unit" placeholder="Enter unit" required>
                 </div>
 
                 <!-- Keywords (Multiselect Text Input) -->

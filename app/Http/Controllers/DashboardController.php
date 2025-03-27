@@ -8,6 +8,7 @@ use DB;
 use Auth;
 use Carbon\Carbon;
 use App\Models\DirectoryMapping;
+use App\Models\Document;
 use LaravelFileViewer;
 use Facades\App\Cache\Company;
 
@@ -23,15 +24,14 @@ class DashboardController extends Controller {
         //$directoryMappings = DB::table('directory_mappings')->get();
         //$directoryMappings = DB::table('directory_mappings')->where('file_type', 'folder')->get();
 
-        $directoryMappings = DB::table('directory_mappings')
-            ->leftJoin('users', 'directory_mappings.uploaded_by', '=', 'users.id')
+        $documents = DB::table('documents')
+            ->leftJoin('users', 'documents.uploaded_by', '=', 'users.id')
             ->select(
-                'directory_mappings.*',
+                'documents.*',
                 'users.name as uploaded_by' // Fetch user name
-            )->where('file_type', 'folder')
-            ->get();
+            )->get();
         
-        $directoryTree = $this->buildTree($directoryMappings);
+        $directoryTree = $this->buildTree($documents);
         //dd(json_encode($directoryTree));
         return view("app.dashboard.index", [
             'directoryTree' => $directoryTree
@@ -47,19 +47,17 @@ class DashboardController extends Controller {
 
         foreach ($elements as $element) {
             if ($element->parent_id == $parentId) {
-                $children = $this->buildTree($elements, $element->file_id);
+                $children = $this->buildTree($elements, $element->document_id);
 
                 $node = [
-                    'title' => $element->file_name,
-                    'key'   => $element->file_id,
+                    'title' => $element->document_subject,
+                    'key'   => $element->document_id,
                     'folder' => (!empty($children)),
-                    'icon'  => (!empty($children)) ? 'fa fa-folder' : $this->getFileIcon($element->file_type),
+                    'icon'  => (!empty($children)) ? 'fa fa-folder' : 'fa fa-file',
                     // Add additional data for columns
                     'uploaded_by' => $element->uploaded_by ?: '-',
                     'memo_created_on' => $element->memo_created_on ?: '-',
                     'expanded' => false,
-                    // Add file_type if needed for icons
-                    'file_type' => $element->file_type
                 ];
 
                 if (!empty($children)) {
@@ -107,11 +105,11 @@ class DashboardController extends Controller {
         
         $folderId = $request->get('folderId');
 
-        $folder_details = DirectoryMapping::with('userDetails')->where('file_id', $folderId)->first();
+        $folder_details = Document::with('userDetails')->where('document_id', $folderId)->first();
         //dd($folder_details);
 
-        $folder_files = DB::table('directory_mappings')->where('parent_id', $folderId)->get();
-        //dd($folder_data);
+        $folder_files = DB::table('documents_files')->where('document_id', $folderId)->get();
+        //dd($folder_files);
         // For now, simulate folder details (replace with actual DB lookup or logic)
         $folderData = [
             'folder_name' => $folder_details->file_name,
