@@ -22,6 +22,7 @@ Route::group(['middleware'=> ['auth']],function () {
 
 
     Route::get('/test', 'TestController@index');
+    Route::get('/test-office-html', 'TestController@testOfficeHtml');
 
 
 
@@ -40,7 +41,9 @@ Route::group(['middleware'=> ['auth']],function () {
     Route::get('/profile', 'DashboardController@index')->name('profile');
     Route::get('/folder-details', 'DashboardController@getDetails')->name('getDetails');
     Route::get('/file-viewer', 'DashboardController@viewFile')->name('file.viewer');
+    Route::get('/create-memo', 'DocumentController@createMemo')->name('memo.create');
 
-
+    Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
+    Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
 
 });

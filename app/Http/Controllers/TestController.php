@@ -20,4 +20,10 @@ class TestController extends Controller {
 
     }
 
+    public function testOfficeHtml() {
+
+        return view('app.dashboard.office-html');
+
+    }
+
 }
