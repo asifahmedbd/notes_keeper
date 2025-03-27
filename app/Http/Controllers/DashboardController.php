@@ -40,7 +40,6 @@ class DashboardController extends Controller {
     }
 
 
-
     private function buildTree($elements, $parentId = 0) {
 
         $branch = [];
@@ -100,8 +99,8 @@ class DashboardController extends Controller {
         return isset($icons[$fileType]) ? $icons[$fileType] : 'fa fa-file';
     }
 
-    public function getDetails(Request $request)
-    {
+
+    public function getDetails(Request $request) {
         
         $folderId = $request->get('folderId');
 
@@ -122,8 +121,9 @@ class DashboardController extends Controller {
         return response()->json($folderData);
     }
 
-    public function viewFile(Request $request)
-    {
+
+    public function viewFile(Request $request) {
+
         // $filepath = public_path('notes_data/' . $request->input('filePath'));
         // $file_url=public_path('notes_data/' . $request->input('filePath'));
         // $file_data=[

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model {
@@ -22,5 +23,4 @@ class Document extends Model {
     public function userDetails() {
         return $this->belongsTo('App\Models\User', 'uploaded_by', 'id');
     }
-
 }
