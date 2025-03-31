@@ -12,6 +12,16 @@
     table.fancytree-ext-table{
         font-size: 10pt !important;
     }
+    .category-node span.fancytree-title {
+        color: blue !important;
+        font-weight: bold;
+    }
+
+    /* Red color for documents */
+    .document-node span.fancytree-title {
+        color: red !important;
+        font-style: italic;
+    }
 </style>
 
 <!-- Required CSS -->

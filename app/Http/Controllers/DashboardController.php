@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use DB;
 use Auth;
 use Carbon\Carbon;
-use App\Models\DirectoryMapping;
+use App\Models\Category;
 use App\Models\Document;
 use LaravelFileViewer;
 use Facades\App\Cache\Company;
@@ -24,19 +24,60 @@ class DashboardController extends Controller {
         //$directoryMappings = DB::table('directory_mappings')->get();
         //$directoryMappings = DB::table('directory_mappings')->where('file_type', 'folder')->get();
 
-        $documents = DB::table('documents')
-            ->leftJoin('users', 'documents.uploaded_by', '=', 'users.id')
-            ->select(
-                'documents.*',
-                'users.name as uploaded_by' // Fetch user name
-            )->get();
+        // $category = DB::table('directory_mappings')
+        //     ->leftJoin('users', 'directory_mappings.uploaded_by', '=', 'users.id')
+        //     ->select(
+        //         'directory_mappings.*',
+        //         'users.name as uploaded_by' // Fetch user name
+        //     )->get();
         
-        $directoryTree = $this->buildTree($documents);
-        //dd(json_encode($directoryTree));
+        // $directoryTree = $this->buildTree($category);
+        // //dd(json_encode($directoryTree));
+        // return view("app.dashboard.index", [
+        //     'directoryTree' => $directoryTree
+        // ]);
+
+        $categories = (new Category())->getCategoryTreeWithDocuments();
+        $tree = $this->formatForFancyTree($categories);
         return view("app.dashboard.index", [
-            'directoryTree' => $directoryTree
+            'directoryTree' => $tree
         ]);
 
+    }
+
+    // Recursive function to format for FancyTree
+    private function formatForFancyTree($categories)
+    {
+        $tree = [];
+
+        foreach ($categories as $category) {
+            $node = [
+                'title' => $category->category_name,
+                'key' => $category->category_id,
+                'folder' => true, // Makes it expandable
+                'extraClasses' => 'category-node', // Add class for blue color
+                'children' => []
+            ];
+
+            // Add documents under this category
+            foreach ($category->documents as $document) {
+                $node['children'][] = [
+                    'title' => $document->document_subject,
+                    'key' => $document->document_id,
+                    'folder' => false, // Documents are leaves
+                    'extraClasses' => 'document-node' // Add class for red color
+                ];
+            }
+
+            // Recursively add subcategories
+            if ($category->children->isNotEmpty()) {
+                $node['children'] = array_merge($node['children'], $this->formatForFancyTree($category->children));
+            }
+
+            $tree[] = $node;
+        }
+
+        return $tree;
     }
 
 
@@ -46,11 +87,11 @@ class DashboardController extends Controller {
 
         foreach ($elements as $element) {
             if ($element->parent_id == $parentId) {
-                $children = $this->buildTree($elements, $element->document_id);
+                $children = $this->buildTree($elements, $element->category_id);
 
                 $node = [
-                    'title' => $element->document_subject,
-                    'key'   => $element->document_id,
+                    'title' => $element->category_name,
+                    'key'   => $element->category_id,
                     'folder' => (!empty($children)),
                     'icon'  => (!empty($children)) ? 'fa fa-folder' : 'fa fa-file',
                     // Add additional data for columns
