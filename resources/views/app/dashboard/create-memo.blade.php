@@ -3,7 +3,7 @@
 
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href="/">Home</a></li>
-<li class="breadcrumb-item active">Create New Memo</li>
+<li class="breadcrumb-item active">Create New Document</li>
 @endsection
 
 @section('content')
@@ -52,49 +52,51 @@
         <!-- Category Dropdown -->
         <div class="mb-3">
             <label for="category" class="form-label">Category</label>
-            <select class="form-select form-control rounded-lg shadow-sm" id="category" name="category" required>
+            <select class="form-select form-control rounded-lg shadow-sm" id="category_select" name="category">
                 <option value="" disabled selected>Select a category</option>
+                <option value="create_new">➕ Create New Category</option>
                 @foreach($flattenedCategories as $category)
                     <option value="{{ $category }}">{{ $category }}</option>
                 @endforeach
+                
             </select>
         </div>
+
+        <!-- Hidden Form for Creating New Category -->
+        <div id="new_category_form" class="border p-3 rounded shadow-sm" style="display: none;">
+            <h5>Create New Category</h5>
+            
+            <!-- Category Name -->
+            <div class="mb-2">
+                <label for="new_category_name" class="form-label">Category Name</label>
+                <input type="text" id="new_category_name" name="new_category_name" class="form-control" placeholder="Enter category name">
+            </div>
+
+            <!-- Parent Category Selection -->
+            <div class="mb-2">
+                <label for="parent_category" class="form-label">Parent Category</label>
+                <select id="parent_category" name="parent_category" class="form-select">
+                    <option value="">No Parent (Root Category)</option>
+                    @foreach($flattenedCategories as $category)
+                        <option value="{{ $category }}">{{ $category }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Create Category Button -->
+            <button type="button" class="btn btn-success btn-sm" id="create_category_btn">
+                <i class="fas fa-plus"></i> Create Category
+            </button>
+        </div>
+
 
 
         <!-- Document Text (Text Editor) -->
         <div class="mb-3">
             <label for="document_text" class="form-label">Document Text</label>
-            <textarea class="form-control" id="document_text" name="document_text" rows="10" required></textarea>
+            <textarea class="form-control" id="document_text" name="document_text" required></textarea>
         </div>
 
-        <!-- Multiple File Uploader -->
-        <div class="mb-3">
-            <label class="form-label">Upload Files</label>
-            <table class="table table-bordered align-middle" id="file-upload-table">
-                <thead class="table-light">
-                    <tr>
-                        <th>File</th>
-                        <th>File Display Name</th>
-                        <th>Comments</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="file" name="files[]" class="form-control" required></td>
-                        <td><input type="text" name="display_name[]" class="form-control" placeholder="Display Name" required></td>
-                        <td><input type="text" name="file_comments[]" class="form-control" placeholder="Comments"></td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-danger btn-sm remove-row" disabled>&times;</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <button type="button" class="btn btn-success btn-sm" id="add-file-row">
-                <i class="fas fa-plus"></i> Add More
-            </button>
-        </div>
 
         <!-- Document Information Section -->
         <div class="mb-4">
@@ -166,59 +168,81 @@
 <!-- Include a text editor library -->
 <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@36.0.1/build/ckeditor.js"></script>
 
-
  <script>
     document.addEventListener("DOMContentLoaded", () => {
-        ClassicEditor
-            .create(document.querySelector('#document_text'))
-            .then(editor => {
-                console.log('Editor initialized:', editor);
-            })
-            .catch(error => {
-                console.error('Error initializing CKEditor:', error);
-            });
-    });
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const fileTable = document.querySelector("#file-upload-table tbody");
-        const addFileRowBtn = document.querySelector("#add-file-row");
-
-        // Add new row
-        addFileRowBtn.addEventListener("click", () => {
-            const newRow = `
-                <tr>
-                    <td><input type="file" name="files[]" class="form-control" required></td>
-                    <td><input type="text" name="display_name[]" class="form-control" placeholder="Display Name" required></td>
-                    <td><input type="text" name="file_comments[]" class="form-control" placeholder="Comments"></td>
-                    <td class="text-center">
-                        <button type="button" class="btn btn-danger btn-sm remove-row">&times;</button>
-                    </td>
-                </tr>
-            `;
-            fileTable.insertAdjacentHTML('beforeend', newRow);
-            updateRemoveButtons();
+    ClassicEditor
+        .create(document.querySelector('#document_text'))
+        .then(editor => {
+            editor.ui.view.editable.element.style.height = "400px"; // Set height
+        })
+        .catch(error => {
+            console.error('Error initializing CKEditor:', error);
         });
+});
 
-        // Remove row
-        fileTable.addEventListener("click", (e) => {
-            if (e.target.classList.contains("remove-row")) {
-                e.target.closest("tr").remove();
-                updateRemoveButtons();
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const categorySelect = document.getElementById("category_select");
+        const newCategoryForm = document.getElementById("new_category_form");
+        const createCategoryBtn = document.getElementById("create_category_btn");
+
+        // Show/hide new category form based on selection
+        categorySelect.addEventListener("change", function () {
+            if (this.value === "create_new") {
+                newCategoryForm.style.display = "block";
+            } else {
+                newCategoryForm.style.display = "none";
             }
         });
 
-        // Enable/disable remove button
-        const updateRemoveButtons = () => {
-            const rows = fileTable.querySelectorAll("tr");
-            rows.forEach((row, index) => {
-                const removeBtn = row.querySelector(".remove-row");
-                removeBtn.disabled = rows.length === 1; // Disable if only 1 row left
+        // Handle new category creation (AJAX)
+        createCategoryBtn.addEventListener("click", function () {
+            const newCategoryName = document.getElementById("new_category_name").value;
+            const parentCategory = document.getElementById("parent_category").value;
+
+            if (!newCategoryName.trim()) {
+                alert("Please enter a category name.");
+                return;
+            }
+
+            // Send AJAX request to create category
+            fetch("{{ route('documents.store') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                },
+                body: JSON.stringify({
+                    category_name: newCategoryName,
+                    parent_id: parentCategory || null
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Category created successfully!");
+                    
+                    // Add the new category to the dropdown dynamically
+                    const newOption = document.createElement("option");
+                    newOption.value = data.category_id;
+                    newOption.textContent = data.category_name;
+                    categorySelect.insertBefore(newOption, categorySelect.lastElementChild);
+
+                    // Reset form and hide
+                    document.getElementById("new_category_name").value = "";
+                    newCategoryForm.style.display = "none";
+                    categorySelect.value = data.category_id;
+                } else {
+                    alert("Error: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Something went wrong.");
             });
-        };
-
-        updateRemoveButtons();
+        });
     });
-
 </script>
 
 

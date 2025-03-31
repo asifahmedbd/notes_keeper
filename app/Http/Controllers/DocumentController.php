@@ -9,10 +9,10 @@ class DocumentController extends Controller {
 
     public function createMemo()
     {
-        $categories = DB::table('directory_mappings')
-            ->leftJoin('users', 'directory_mappings.uploaded_by', '=', 'users.id')
+        $categories = DB::table('categories')
+            ->leftJoin('users', 'categories.uploaded_by', '=', 'users.id')
             ->select(
-                'directory_mappings.*',
+                'categories.*',
                 'users.name as uploaded_by' // Fetch user name
             )->where('file_type', 'folder')
             ->get();
@@ -52,10 +52,10 @@ class DocumentController extends Controller {
 
         foreach ($elements as $element) {
             if ($element->parent_id == $parentId) {
-                $children = $this->buildTree($elements, $element->file_id);
+                $children = $this->buildTree($elements, $element->category_id);
 
                 $node = [
-                    'title' => $element->file_name,
+                    'title' => $element->category_name,
                 ];
 
                 if (!empty($children)) {
