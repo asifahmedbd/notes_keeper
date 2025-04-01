@@ -16,3 +16,12 @@ function renderTree($items) {
     return $html;
 }
 
+
+function createFolderIfNotExists($folderPath, $location='public') {
+
+    $directoryPath = public_path($folderPath);
+    if ($location == 'storage') $directoryPath = storage_path($folderPath);
+
+    if (! is_dir($directoryPath)) mkdir($directoryPath, 0755, true);
+}
+

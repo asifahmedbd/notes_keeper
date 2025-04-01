@@ -43,7 +43,30 @@ Route::group(['middleware'=> ['auth']],function () {
     Route::get('/file-viewer', 'DashboardController@viewFile')->name('file.viewer');
     Route::get('/create-memo', 'DocumentController@createMemo')->name('memo.create');
 
-    Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
-    Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+
+
+    /*
+    * Document Routes
+    */
+
+    Route::get('/create/document', 'DocumentController@create')->name('create.document');
+    Route::post('/store/document', 'DocumentController@store')->name('store.document');
+
+
+
+    /*
+    * Category Routes
+    */
+
+    Route::post('/create/category', 'CategoryController@addCategory');
+
+
+
+    /*
+    * Directory Scanner Routes
+    */
+
+    Route::get('/directory-scanner', 'DirectoryScannerController@index')->name('directory.scanner');
+    Route::post('/directory-scanner', 'DirectoryScannerController@directoryScanner');
 
 });

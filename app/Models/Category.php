@@ -20,23 +20,24 @@ class Category extends Model {
         'uploaded_by',
     ];
 
+
     public function userDetails() {
         return $this->belongsTo('App\Models\User', 'uploaded_by', 'id');
     }
 
-    public function documents()
-    {
+
+    public function documents() {
         return $this->hasMany(Document::class, 'category_id');
     }
 
-    public function children()
-    {
+
+    public function children() {
         return $this->hasMany(Category::class, 'parent_id')->with('documents', 'children');
     }
 
     
-    public function getCategoryTreeWithDocuments()
-    {
+    public function getCategoryTreeWithDocuments() {
+
         return $categories = Category::where('parent_id', 0)
         ->with('documents', 'children')
         ->get();

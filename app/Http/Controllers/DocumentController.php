@@ -7,8 +7,8 @@ use DB;
 
 class DocumentController extends Controller {
 
-    public function createMemo()
-    {
+    public function createMemo() {
+
         $categories = DB::table('categories')
             ->leftJoin('users', 'categories.uploaded_by', '=', 'users.id')
             ->select(
@@ -21,8 +21,12 @@ class DocumentController extends Controller {
 
         $flattenedCategories = $this->flattenCategories($directoryTree);
         
-        return view('app.dashboard.create-memo', compact('flattenedCategories'));
+        return view('app.dashboard.create-memo', [
+            'categories' => $categories,
+            'flattenedCategories' => $flattenedCategories,
+        ]);
     }
+
 
     function flattenCategories($categories, $prefix = '') {
         $flattened = [];
@@ -40,11 +44,12 @@ class DocumentController extends Controller {
     }
     
     
-    public function create()
-    {
+    public function create() {
 
         return view('create-memo', compact('categories'));
+
     }
+
 
     private function buildTree($elements, $parentId = 0) {
 
@@ -69,8 +74,9 @@ class DocumentController extends Controller {
         return $branch;
     }
 
-    public function store(Request $request)
-    {
+
+    public function store(Request $request) {
+
         $validated = $request->validate([
             'subject' => 'required|string|max:255',
             'category' => 'required|exists:categories,id',
