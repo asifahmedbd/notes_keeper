@@ -1,14 +1,40 @@
 var categories = [];
 
-$(document).ready(function() {
+$(document).ready(function () {
+
+    $.getScript("https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@36.0.1/build/ckeditor.js", function() {
+
+        ClassicEditor
+            .create(document.querySelector('#document_text'))
+            .then(function(editor) {
+                var editingView = editor.editing.view;
+                var viewDocument = editingView.document;
+
+                editingView.change(function(writer) {
+                    writer.setStyle('height', '300px', viewDocument.getRoot());
+                });
+
+                editor.ui.focusTracker.on('change:isFocused', function(evt, name, isFocused) {
+                    if (isFocused) {
+                        editingView.change(function(writer) {
+                            writer.setStyle('height', '300px', viewDocument.getRoot());
+                        });
+                    }
+                });
+            })
+            .catch(function(error) {
+                console.error('Error initializing CKEditor:', error);
+            });
+
+    });
+
 
     $('#create_category_button').click(function () {
 
         var parent_id = $('#current_category_id').val();
         var category_name = $('#category_name').val();
 
-        if (category_name != '') {
-
+        if (category_name !== '') {
             var params = {
                 parent_id: parent_id,
                 category_name: category_name,
@@ -19,24 +45,20 @@ $(document).ready(function() {
                 type: 'POST',
                 format: 'JSON',
                 data: {params: params, "_token": $('#token').val()},
-
                 success: function (response) {
-
-                    if (response.status == 'success') {
-                        pushToCategoryArray(response.category);
-                        $('#category_id').val(response.category_id);
-                        $('#category_name').val('');
+                    if (response.status === 'success') {
                         alert(category_name + ' Created!');
+                        $('#category_id').val(response.category_id);
+                        $('#current_category_id').val(response.category_id);
+                        $('#current_category_name').val(category_name);
+                        $('#category_name').val('');
                     }
-
                 },
-                error: function (error) {
-                    showErrorNotification();
+                error: function () {
+                    alert("Something went wrong with the creation of the category.");
                 }
             });
-
         }
-
     });
 
 });
@@ -76,10 +98,12 @@ function renderCategoryTable(parent_id) {
 
     if (parseInt(parent_id) == 0) {
         $('.current_category_name').text('Root');
+        $('#current_category_name').val('Root');
     }
     else {
         category = getCategory(parent_id);
         $('.current_category_name').text(category.category_name);
+        $('#current_category_name').val(category.category_name);
 
         html_str += '<tr>' +
             '<th onclick="renderCategoryTable('+ category.parent_id +');" colspan="3" class="pointer text-center text-warning">Return To Previous Category</th>' +

@@ -8,37 +8,6 @@
 
 @section('content')
 
-    <style>
-        #category {
-            border: 1px solid #ddd;
-            padding: 0.5rem;
-            background-color: #f9f9f9;
-            transition: 0.2s ease-in-out;
-        }
-
-        #category:focus {
-            border-color: #4a90e2;
-            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
-            background-color: #fff;
-        }
-
-        #file-upload-table th, #file-upload-table td {
-            vertical-align: middle;
-            text-align: center;
-        }
-
-        #add-file-row {
-            display: block;
-            margin-top: 10px;
-        }
-
-        input[type="file"] {
-            padding: 3px;
-        }
-
-    </style>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/category.js"></script>
 
     <script type="application/javascript">
@@ -60,7 +29,12 @@
                             <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter document subject" required>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-3">
+                            <label for="current_category_name">Selected Category</label>
+                            <input type="text" readonly="" class="form-control-plaintext" id="current_category_name" value="Root">
+                        </div>
+
+                        <div class="col-md-3">
 
                             <input type="hidden" id="category_id" value="0">
 
@@ -75,51 +49,6 @@
                         </div>
 
                     </div>
-
-
-
-                    <!-- Category Dropdown -->
-                    {{--<div class="mb-3">--}}
-                    {{--<label for="category_select" class="form-label">Category</label>--}}
-                    {{--<select class="form-select form-control rounded-lg shadow-sm" id="category_select" name="category">--}}
-                    {{--<option value="" disabled selected>Select a category</option>--}}
-                    {{--<option value="create_new">➕ Create New Category</option>--}}
-                    {{--@foreach($flattenedCategories as $category)--}}
-                    {{--<option value="{{ $category }}">{{ $category }}</option>--}}
-                    {{--@endforeach--}}
-                    {{----}}
-                    {{--</select>--}}
-                    {{--</div>--}}
-
-                <!-- Hidden Form for Creating New Category -->
-                    {{--<div id="new_category_form" class="border p-3 rounded shadow-sm" style="display: none;">--}}
-                    {{--<h5>Create New Category</h5>--}}
-                    {{----}}
-                    {{--<!-- Category Name -->--}}
-                    {{--<div class="mb-2">--}}
-                    {{--<label for="new_category_name" class="form-label">Category Name</label>--}}
-                    {{--<input type="text" id="new_category_name" name="new_category_name" class="form-control" placeholder="Enter category name">--}}
-                    {{--</div>--}}
-
-                    {{--<!-- Parent Category Selection -->--}}
-                    {{--<div class="mb-2">--}}
-                    {{--<label for="parent_category" class="form-label">Parent Category</label>--}}
-                    {{--<select id="parent_category" name="parent_category" class="form-select">--}}
-                    {{--<option value="">No Parent (Root Category)</option>--}}
-                    {{--@foreach($flattenedCategories as $category)--}}
-                    {{--<option value="{{ $category }}">{{ $category }}</option>--}}
-                    {{--@endforeach--}}
-                    {{--</select>--}}
-                    {{--</div>--}}
-
-                    {{--<!-- Create Category Button -->--}}
-                    {{--<button type="button" class="btn btn-success btn-sm" id="create_category_btn">--}}
-                    {{--<i class="fas fa-plus"></i> Create Category--}}
-                    {{--</button>--}}
-                    {{--</div>--}}
-
-
-
 
                     <div class="mb-4">
                         <h4>Document Information</h4>
@@ -244,85 +173,5 @@
             </div>
         </div>
     </div>
-
-    <!-- Include a text editor library -->
-    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@36.0.1/build/ckeditor.js"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            ClassicEditor
-            .create(document.querySelector('#document_text'))
-            .then(editor => {
-            editor.ui.view.editable.element.style.height = "400px"; // Set height
-        })
-        .catch(error => {
-            console.error('Error initializing CKEditor:', error);
-        });
-        });
-
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const categorySelect = document.getElementById("category_select");
-            const newCategoryForm = document.getElementById("new_category_form");
-            const createCategoryBtn = document.getElementById("create_category_btn");
-
-            // Show/hide new category form based on selection
-            categorySelect.addEventListener("change", function () {
-                if (this.value === "create_new") {
-                    newCategoryForm.style.display = "block";
-                } else {
-                    newCategoryForm.style.display = "none";
-                }
-            });
-
-            // Handle new category creation (AJAX)
-            createCategoryBtn.addEventListener("click", function () {
-                const newCategoryName = document.getElementById("new_category_name").value;
-                const parentCategory = document.getElementById("parent_category").value;
-
-                if (!newCategoryName.trim()) {
-                    alert("Please enter a category name.");
-                    return;
-                }
-
-                // Send AJAX request to create category
-                fetch("{{ route('store.document') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                    },
-                    body: JSON.stringify({
-                        category_name: newCategoryName,
-                        parent_id: parentCategory || null
-                    })
-                })
-                    .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                    alert("Category created successfully!");
-
-                    // Add the new category to the dropdown dynamically
-                    const newOption = document.createElement("option");
-                    newOption.value = data.category_id;
-                    newOption.textContent = data.category_name;
-                    categorySelect.insertBefore(newOption, categorySelect.lastElementChild);
-
-                    // Reset form and hide
-                    document.getElementById("new_category_name").value = "";
-                    newCategoryForm.style.display = "none";
-                    categorySelect.value = data.category_id;
-                } else {
-                    alert("Error: " + data.message);
-                }
-            })
-                .catch(error => {
-                    console.error("Error:", error);
-                alert("Something went wrong.");
-            });
-            });
-        });
-    </script>
 
 @endsection

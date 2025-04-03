@@ -34,10 +34,12 @@
 
 <link rel="stylesheet" href="/css/jquery.dataTables.min.css" type="text/css"/>
 
-{{--<script src="/js/application.js"></script>--}}
 <script src="/js/Chart.min.js"></script>
 
 <link href="/css/summernote-bs4.css" rel="stylesheet" type="text/css" />
 
 
 <link href="/css/theme-1.css" rel="stylesheet" type="text/css" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/application.js"></script>

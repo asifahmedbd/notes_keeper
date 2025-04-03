@@ -18,3 +18,31 @@ input[type=number] {
 .pointer {
     cursor: pointer;
 }
+
+
+#category {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    background-color: #f9f9f9;
+    transition: 0.2s ease-in-out;
+}
+
+#category:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+    background-color: #fff;
+}
+
+#file-upload-table th, #file-upload-table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+#add-file-row {
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="file"] {
+    padding: 3px;
+}
