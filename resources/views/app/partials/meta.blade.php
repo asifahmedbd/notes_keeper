@@ -14,4 +14,4 @@
 <meta name="robots" content="noindex, nofollow">
 
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<link rel="shortcut icon" href="/images/icon.png">
+<link rel="shortcut icon" href="{{ env('APP_PATH') }}/images/icon.png">

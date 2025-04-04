@@ -8,7 +8,7 @@
 
 @section('content')
 
-    <script src="/js/category.js"></script>
+    <script src="{{ env('APP_PATH') }}/js/category.js"></script>
 
     <script type="application/javascript">
         @foreach($categories as $category)

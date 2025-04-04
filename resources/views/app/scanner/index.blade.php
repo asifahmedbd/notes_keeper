@@ -8,7 +8,7 @@
 
 @section('content')
 
-    <script src="/js/scanner.js"></script>
+    <script src="{{ env('APP_PATH') }}/js/scanner.js"></script>
 
     <div class="row">
         <div class="col-md-12">
