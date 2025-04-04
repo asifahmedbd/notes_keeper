@@ -11,7 +11,7 @@
 
                         <div class="text-center w-75 m-auto">
                             <a href="/">
-                                <span><img src="/images/app_logo.png" width="80%"></span>
+                                <span><img src="{{ env('APP_PATH') }}/images/app_logo.png" width="80%"></span>
                             </a>
                             <p class="text-muted mb-4 mt-3">Enter username and password to login</p>
                         </div>

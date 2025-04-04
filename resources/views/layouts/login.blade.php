@@ -3,9 +3,9 @@
 <head>
     @include('app.partials.meta')
 
-    <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="/css/icons.min.css" rel="stylesheet" type="text/css" />
-    <link href="/css/app.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ env('APP_PATH') }}/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ env('APP_PATH') }}/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ env('APP_PATH') }}/css/app.min.css" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -15,9 +15,9 @@
     @yield('content')
 </div>
 
-<script src="/js/vendor.min.js"></script>
-<script src="/js/app.min.js"></script>
-<script src="/js/application.js"></script>
+<script src="{{ env('APP_PATH') }}/js/vendor.min.js"></script>
+<script src="{{ env('APP_PATH') }}/js/app.min.js"></script>
+<script src="{{ env('APP_PATH') }}/js/application.js"></script>
 
 </body>
 </html>

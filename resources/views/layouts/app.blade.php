@@ -33,6 +33,7 @@
                 @endauth
 
                 <input type="hidden" id="token" value="{{ csrf_token() }}">
+                <input type="hidden" id="app_path" value="{{ env('APP_PATH') }}">
 
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     {{ csrf_field() }}

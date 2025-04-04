@@ -1,6 +1,9 @@
+var app_path = '';
 var categories = [];
 
 $(document).ready(function () {
+
+    app_path = $('#app_path').val();
 
     $.getScript("https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@36.0.1/build/ckeditor.js", function() {
 
@@ -41,7 +44,7 @@ $(document).ready(function () {
             };
 
             $.ajax({
-                url: '/create/category',
+                url: app_path + '/create/category',
                 type: 'POST',
                 format: 'JSON',
                 data: {params: params, "_token": $('#token').val()},

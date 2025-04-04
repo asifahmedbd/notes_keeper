@@ -138,6 +138,7 @@
         // Load FancyTree script first
         //var folderDetailsHtml = "<p>No folder details available.</p>";
 
+        var app_path = $('#app_path').val();
 
         $.getScript("https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.38.2/jquery.fancytree-all-deps.min.js", function() {
             console.log("FancyTree script loaded!");
@@ -179,7 +180,7 @@
                     if (node.folder === false) {
                         // Send AJAX request to fetch folder details
                         $.ajax({
-                            url: "/folder-details", // Your route to fetch data
+                            url: app_path + "/folder-details", // Your route to fetch data
                             type: "GET",
                             data: { folderId: node.key },
                             success: function(response) {
@@ -291,7 +292,7 @@
         //     $("#fileDetailsModal").modal("show");
         //     // Fetch file details using AJAX
         //     $.ajax({
-        //         url: "{{ route('file.viewer') }}", // Route to fetch file details
+        //         url: app_path + "{{ route('file.viewer') }}", // Route to fetch file details
         //         method: "GET",
         //         data: { filePath: filePath },
         //         success: function(response) {
@@ -326,7 +327,7 @@
                 $("#file_p").show();
 
                 $("#resolte-contaniner").officeToHtml({
-                  url: file_path,
+                  url: app_path + file_path,
                   pdfSetting: {
                     setLang: "",
                     setLangFilesPath: "" /*"include/pdf/lang/locale" - relative to app path*/
