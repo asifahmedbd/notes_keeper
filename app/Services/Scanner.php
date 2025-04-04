@@ -32,6 +32,7 @@ class Scanner {
         $files = [];
 
         foreach ($items as $item) {
+
             if ($item === '.' || $item === '..') {
                 continue;
             }

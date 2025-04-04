@@ -35,13 +35,13 @@ class Category extends Model {
         return $this->hasMany(Category::class, 'parent_id')->with('documents', 'children');
     }
 
-    
+
     public function getCategoryTreeWithDocuments() {
 
         return $categories = Category::where('parent_id', 0)
-        ->with('documents', 'children')
-        ->get();
-    
+            ->with('documents', 'children')
+            ->get();
+
     }
 
 }

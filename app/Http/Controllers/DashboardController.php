@@ -21,45 +21,29 @@ class DashboardController extends Controller {
 
     public function index() {
 
-        //$directoryMappings = DB::table('directory_mappings')->get();
-        //$directoryMappings = DB::table('directory_mappings')->where('file_type', 'folder')->get();
-
-        // $category = DB::table('directory_mappings')
-        //     ->leftJoin('users', 'directory_mappings.uploaded_by', '=', 'users.id')
-        //     ->select(
-        //         'directory_mappings.*',
-        //         'users.name as uploaded_by' // Fetch user name
-        //     )->get();
-        
-        // $directoryTree = $this->buildTree($category);
-        // //dd(json_encode($directoryTree));
-        // return view("app.dashboard.index", [
-        //     'directoryTree' => $directoryTree
-        // ]);
-
         $categories = (new Category())->getCategoryTreeWithDocuments();
         $tree = $this->formatForFancyTree($categories);
+
         return view("app.dashboard.index", [
             'directoryTree' => $tree
         ]);
 
     }
 
-    // Recursive function to format for FancyTree
-    private function formatForFancyTree($categories)
-    {
+
+    private function formatForFancyTree($categories) {
+
         $tree = [];
 
         foreach ($categories as $category) {
             $node = [
                 'title' => $category->category_name,
                 'key' => $category->category_id,
-                'folder' => true, // Makes it expandable
-                'extraClasses' => 'category-node', // Add class for blue color
+                'folder' => true,
+                'extraClasses' => 'category-node',
                 'children' => []
             ];
 
-            // Add documents under this category
             foreach ($category->documents as $document) {
                 $node['children'][] = [
                     'title' => $document->document_subject,
@@ -69,7 +53,6 @@ class DashboardController extends Controller {
                 ];
             }
 
-            // Recursively add subcategories
             if ($category->children->isNotEmpty()) {
                 $node['children'] = array_merge($node['children'], $this->formatForFancyTree($category->children));
             }

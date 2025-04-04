@@ -55,6 +55,7 @@ $(document).ready(function () {
                         $('#current_category_id').val(response.category_id);
                         $('#current_category_name').val(category_name);
                         $('#category_name').val('');
+                        pushToCategoryArray(response.category);
                     }
                 },
                 error: function () {

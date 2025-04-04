@@ -16,7 +16,7 @@ class Document extends Model {
         'doc_status',
         'doc_unit',
         'doc_keywords',
-        'parent_id',
+        'category_id',
         'uploaded_by',
     ];
 
