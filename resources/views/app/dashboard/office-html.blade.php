@@ -94,7 +94,6 @@
         <div style="overflow: hidden;width: 800px; ">
           <div id="resolte-contaniner" style="width: 100%; height:550px; overflow: auto;"></div>
         </div>
-        <iframe src="http://docs.google.com/gview?url=public/files/demo.pptx&embedded=true" style="width:550px; height:450px;" frameborder="0"></iframe>
 
         <script>
           (function ($) {

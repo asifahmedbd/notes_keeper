@@ -129,9 +129,25 @@
     </div>
 </div>
 
-<div style="overflow: hidden;width: 800px; ">
-    <div id="resolte-contaniner" style="width: 100%; height:550px; overflow: auto;"></div>
+<!-- <div style="overflow: hidden;width: 800px; ">
+    <div id="#" style="width: 100%; height:550px; overflow: auto;"></div>
+</div> -->
+
+<!-- Modal for Viewing Files -->
+<div class="modal fade" id="viewFileModal" tabindex="-1" aria-labelledby="viewFileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="max-width: 90%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">File Viewer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="overflow: hidden;">
+                <div id="resolte-contaniner" style="width: 100%; height: 550px; overflow: auto;"></div>
+            </div>
+        </div>
+    </div>
 </div>
+
 
 <script>
     $(document).ready(function() {
@@ -225,7 +241,7 @@
                                                 <td>${file.file_type ?? "N/A"}</td>
                                                 <td>${file.uploaded_on ?? "N/A"}</td>
                                                 <td>
-                                                    <button class="btn btn-primary btn-xs view-file-btn demos" data-file="demo.pptx" data-file-path="${file.file_path}">
+                                                    <button class="btn btn-primary btn-xs view-file-btn demos" data-file="demo.pdf" data-file-path="${file.file_path}">
                                                         View File
                                                     </button>
                                                     <button class="btn btn-primary btn-xs view-file-btn download" data-file="demo.pptx" data-file-path="${file.file_path}">
@@ -285,69 +301,110 @@
             console.log("FancyTree initialized successfully!");
         });
 
+        function loadPptxViewer(file_path) {
+            // Load the script only if not already loaded
 
-        // Handle "View File" button click
-        // $(document).on("click", ".view-file-btn", function() {
-        //     const filePath = $(this).data("file-path");
-        //     $("#fileDetailsModal").modal("show");
-        //     // Fetch file details using AJAX
-        //     $.ajax({
-        //         url: app_path + "{{ route('file.viewer') }}", // Route to fetch file details
-        //         method: "GET",
-        //         data: { filePath: filePath },
-        //         success: function(response) {
-        //             // Load the response into the modal
-        //             $("#fileDetailsContent").html(response);
-        //             // Show the modal
-        //             //$("#fileDetailsModal").modal("show");
-        //         },
-        //         error: function() {
-        //             alert("Failed to load file details.");
-        //         }
-        //     });
-        // });
-
-        $(document).on("click", ".demos", function() {
-              //e.preventDefault();
-
-              $(".sdb_holder li").removeClass("active");
-              $(this).parent().addClass("active");
-              var id = $(this).attr("id");
-              $("#head-name").html($(this).html());
-              $("#description").hide();
-              $("#resolte-contaniner").html("");
-              $("#resolte-contaniner").show();
-              $("#resolte-text").show();
-              if (id != "demo_input") {
-
-                $("#select_file").hide();
-                var file_path = "files\\" + $(this).data("file");
-                $("#a_file").html($(this).data("file")).attr("href", file_path);
-                $("#a_file").show();
-                $("#file_p").show();
-
-                $("#resolte-contaniner").officeToHtml({
-                  url: app_path + file_path,
-                  pdfSetting: {
-                    setLang: "",
-                    setLangFilesPath: "" /*"include/pdf/lang/locale" - relative to app path*/
-                  }
+            $.getScript('/include/PPTXjs/js/pptxjs.js', function () {
+                $.getScript('/include/PPTXjs/js/divs2slides.js', function () {
+                    renderPptx(file_path);
                 });
+            });
+
+            // if (typeof $.fn.pptxToHtml === "undefined") {
+            //     $.getScript('/include/PPTXjs/js/pptxjs.js', function () {
+            //         $.getScript('/include/PPTXjs/js/divs2slides.js', function () {
+            //             renderPptx(file_path);
+            //         });
+            //     });
+            // } else {
+            //     renderPptx(file_path);
+            // }
+
+            // function renderPptx(file_path) {
+            //     $("#resolte-contaniner").html(""); // Clear previous content
+            //     $("#resolte-contaniner").pptxToHtml({
+            //         pptxFileUrl: app_path + file_path
+            //     });
+            // }
+
+            function renderPptx(file_path) {
+                const container = $("#resolte-contaniner");
+                container.html("<p id='loading-msg'>Loading presentation...</p>");
+
+                // Setup a timeout as a fallback
+                const fallbackTimeout = setTimeout(() => {
+                    if (container.find(".slide").length === 0) {
+                        container.html("<p class='text-danger'>Could not display the presentation. Try another file.</p>");
+                    }
+                }, 3000); // You can adjust the time as needed
+
+                // Load presentation
+                container.pptxToHtml({
+                    pptxFileUrl: app_path + file_path,
+                    slideMode: true,
+                    keyBoardShortCut: true,
+                    slideModeConfig: {
+                        toolbar: {
+                            enabled: true,
+                            autoHide: false
+                        }
+                    },
+                    pptxFileConversionComplete: function () {
+                        // Clear loading message
+                        $("#loading-msg").remove();
+
+                        // Cancel fallback if content loaded successfully
+                        clearTimeout(fallbackTimeout);
+
+                        // Run toolbar setup
+                        if (typeof divs2slides === "function") {
+                            divs2slides();
+                        } else {
+                            console.warn("divs2slides not defined.");
+                        }
+                    }
+                });
+            }
+
+
+
+
+
+        }
+
+
+        $(document).on("click", ".demos", function () {
+            var file_path = $(this).data("file-path");
+            var file_name = file_path.split('/').pop();
+            var extension = file_name.split('.').pop().toLowerCase();
+
+            $("#viewFileModal").modal("show");
+            $("#resolte-contaniner").html("");
+
+            if (extension === "pptx") {
+                loadPptxViewer(file_path);
             } else {
+                // Default to officeToHtml for others like .docx, .pdf, etc.
+                if (typeof $.fn.officeToHtml === "undefined") {
+                    $.getScript('/js/officeToHtml.js', function () {
+                        loadOfficeDoc(file_path);
+                    });
+                } else {
+                    loadOfficeDoc(file_path);
+                }
+            }
 
-                $("#select_file").show();
-                $("#file_p").show();
-                $("#a_file").hide();
-
+            function loadOfficeDoc(file_path) {
                 $("#resolte-contaniner").officeToHtml({
-                  inputObjId: "select_file",
-                  pdfSetting: {
-                    setLang: "",
-                    setLangFilesPath: "" /*"include/pdf/lang/locale" - relative to app path*/
-                  }
+                    url: app_path + file_path,
+                    pdfSetting: {
+                        setLang: "",
+                        setLangFilesPath: ""
+                    }
                 });
             }
         });
+
 
     });
 </script>
