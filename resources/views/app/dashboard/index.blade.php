@@ -313,23 +313,6 @@
                 });
             });
 
-            // if (typeof $.fn.pptxToHtml === "undefined") {
-            //     $.getScript('/include/PPTXjs/js/pptxjs.js', function () {
-            //         $.getScript('/include/PPTXjs/js/divs2slides.js', function () {
-            //             renderPptx(file_path);
-            //         });
-            //     });
-            // } else {
-            //     renderPptx(file_path);
-            // }
-
-            // function renderPptx(file_path) {
-            //     $("#resolte-contaniner").html(""); // Clear previous content
-            //     $("#resolte-contaniner").pptxToHtml({
-            //         pptxFileUrl: app_path + file_path
-            //     });
-            // }
-
             function renderPptx(file_path) {
                 const container = $("#resolte-contaniner");
                 container.html("<p id='loading-msg'>Loading presentation...</p>");
@@ -368,11 +351,6 @@
                     }
                 });
             }
-
-
-
-
-
         }
 
 
@@ -400,13 +378,24 @@
 
             function loadOfficeDoc(file_path) {
                 $("#resolte-contaniner").officeToHtml({
-                    url: app_path + file_path,
+                    url: file_path,
                     pdfSetting: {
                         setLang: "",
                         setLangFilesPath: ""
                     }
                 });
             }
+        });
+
+        $(document).on("click", ".download", function () {
+            var app_path = $('#app_path').val();
+            var filePath = $(this).data('file-path');
+            var link = document.createElement('a');
+            link.href = app_path + filePath;
+            link.download = '';  // Forces download in most browsers
+            $('body').append(link);
+            link.click();
+            $('body').removeChild(link);  // Clean up
         });
 
 
