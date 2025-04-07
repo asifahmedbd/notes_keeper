@@ -151,6 +151,27 @@
     </div>
 </div>
 
+<!-- Modal for Viewing Video -->
+<div class="modal fade" id="viewVideoModal" tabindex="-1" aria-labelledby="viewVideoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="max-width: 90%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Video Viewer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="overflow: hidden;">
+                <!-- Video Player -->
+                <video id="videoPlayer" controls style="width: 100%; height: auto;">
+                    <!-- Video will be loaded dynamically here -->
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <script>
     $(document).ready(function() {
@@ -360,42 +381,71 @@
             var file_name = file_path.split('/').pop();
             var extension = file_name.split('.').pop().toLowerCase();
 
-            $("#viewFileModal").modal("show");
-            $("#resolte-contaniner").html("");
 
-            if (extension === "pptx") {
-                loadPptxViewer(file_path);
+            // Define supported video extensions
+            var videoExtensions = ['mp4', 'webm', 'ogg', 'avi', 'mov', 'wmv', 'flv', 'mkv'];
+
+            // Check if the file extension is a video
+            if (videoExtensions.includes(extension)) {
+                // It's a video, so show the video modal
+                $('#viewVideoModal').modal('show');
+                var videoPlayer = $('#videoPlayer');
+        
+                // Clear previous sources before adding new ones
+                videoPlayer.empty();
+
+                // Set video source based on the file path
+                videoPlayer.append('<source src="' + file_path + '" type="video/' + extension + '">');
+
+                // Check if the browser supports the format, and fallback if necessary
+                videoPlayer[0].load();  // Reload the video player to apply the source
+                videoPlayer[0].play();  // Attempt to play the video immediately
+
             } else {
-                // Default to officeToHtml for others like .docx, .pdf, etc.
-                if (typeof $.fn.officeToHtml === "undefined") {
-                    $.getScript(app_path + '/js/officeToHtml.js', function () {
-                        loadOfficeDoc(file_path);
-                    });
+
+                $("#viewFileModal").modal("show");
+                $("#resolte-contaniner").html("");
+
+                if (extension === "pptx") {
+                    loadPptxViewer(file_path);
                 } else {
-                    loadOfficeDoc(file_path);
+                    // Default to officeToHtml for others like .docx, .pdf, etc.
+                    if (typeof $.fn.officeToHtml === "undefined") {
+                        $.getScript(app_path + '/js/officeToHtml.js', function () {
+                            loadOfficeDoc(file_path);
+                        });
+                    } else {
+                        loadOfficeDoc(file_path);
+                    }
+                }
+
+                function loadOfficeDoc(file_path) {
+                    $("#resolte-contaniner").officeToHtml({
+                        url: file_path,
+                        pdfSetting: {
+                            setLang: "",
+                            setLangFilesPath: ""
+                        }
+                    });
                 }
             }
+        });
 
-            function loadOfficeDoc(file_path) {
-                $("#resolte-contaniner").officeToHtml({
-                    url: file_path,
-                    pdfSetting: {
-                        setLang: "",
-                        setLangFilesPath: ""
-                    }
-                });
-            }
+        // When modal is closed, reset video source (to stop video)
+        $('#viewVideoModal').on('hidden.bs.modal', function () {
+            var videoPlayer = $('#videoPlayer')[0];
+            videoPlayer.pause();  // Pause the video when closing
+            videoPlayer.src = '';  // Clear the source to stop the video
         });
 
         $(document).on("click", ".download", function () {
             var app_path = $('#app_path').val();
             var filePath = $(this).data('file-path');
             var link = document.createElement('a');
-            link.href = app_path + filePath;
+            link.href = filePath;
             link.download = '';  // Forces download in most browsers
             $('body').append(link);
             link.click();
-            $('body').removeChild(link);  // Clean up
         });
 
 
