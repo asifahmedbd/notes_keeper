@@ -244,10 +244,10 @@
                                                 <td>${file.file_type ?? "N/A"}</td>
                                                 <td>${file.uploaded_on ?? "N/A"}</td>
                                                 <td>
-                                                    <button class="btn btn-primary btn-xs view-file-btn demos" data-file="demo.pdf" data-file-path="${file.file_path}">
+                                                    <button class="btn btn-primary btn-xs view-file-btn demos" data-file="demo.pdf" data-file-path="${app_path}/${file.file_path}">
                                                         View File
                                                     </button>
-                                                    <button class="btn btn-primary btn-xs view-file-btn download" data-file="demo.pptx" data-file-path="${file.file_path}">
+                                                    <button class="btn btn-primary btn-xs view-file-btn download" data-file="demo.pptx" data-file-path="${app_path}/${file.file_path}">
                                                         Download
                                                     </button>
                                                 </td>
@@ -343,7 +343,7 @@
 
                 // Load presentation
                 container.pptxToHtml({
-                    pptxFileUrl: app_path + file_path,
+                    pptxFileUrl: file_path,
                     slideMode: true,
                     keyBoardShortCut: true,
                     slideModeConfig: {
