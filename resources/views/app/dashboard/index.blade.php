@@ -139,7 +139,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">File Viewer</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
             </div>
             <div class="modal-body" style="overflow: hidden;">
                 <div id="resolte-contaniner" style="width: 100%; height: 550px; overflow: auto;"></div>
