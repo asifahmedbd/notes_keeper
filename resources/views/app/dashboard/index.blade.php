@@ -306,9 +306,9 @@
 
         function loadPptxViewer(file_path) {
             // Load the script only if not already loaded
-
-            $.getScript('/include/PPTXjs/js/pptxjs.js', function () {
-                $.getScript('/include/PPTXjs/js/divs2slides.js', function () {
+            var app_path = $('#app_path').val();
+            $.getScript(app_path + '/include/PPTXjs/js/pptxjs.js', function () {
+                $.getScript(app_path + '/include/PPTXjs/js/divs2slides.js', function () {
                     renderPptx(file_path);
                 });
             });
@@ -377,6 +377,7 @@
 
 
         $(document).on("click", ".demos", function () {
+            var app_path = $('#app_path').val();
             var file_path = $(this).data("file-path");
             var file_name = file_path.split('/').pop();
             var extension = file_name.split('.').pop().toLowerCase();
@@ -389,7 +390,7 @@
             } else {
                 // Default to officeToHtml for others like .docx, .pdf, etc.
                 if (typeof $.fn.officeToHtml === "undefined") {
-                    $.getScript('/js/officeToHtml.js', function () {
+                    $.getScript(app_path + '/js/officeToHtml.js', function () {
                         loadOfficeDoc(file_path);
                     });
                 } else {
