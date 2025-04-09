@@ -43,3 +43,5 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ env('APP_PATH') }}/js/application.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.38.2/skin-win8/ui.fancytree.min.css" rel="stylesheet">

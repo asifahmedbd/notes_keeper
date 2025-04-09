@@ -3,29 +3,45 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 use DB;
 
+use App\Models\Category;
+
 class DocumentController extends Controller {
+
 
     public function createMemo() {
 
-        $categories = DB::table('categories')
-            ->leftJoin('users', 'categories.uploaded_by', '=', 'users.id')
-            ->select(
-                'categories.*',
-                'users.name as uploaded_by' // Fetch user name
-            )->where('file_type', 'folder')
-            ->get();
-
-        $directoryTree = $this->buildTree($categories);
-
-        $flattenedCategories = $this->flattenCategories($directoryTree);
-        
         return view('app.dashboard.create-memo', [
-            'categories' => $categories,
-            'flattenedCategories' => $flattenedCategories,
+
         ]);
+    }
+
+
+    private function formatForFancyTree($categories) {
+
+        $tree = [];
+
+        foreach ($categories as $category) {
+
+            $node = [
+                'title' => $category->category_name,
+                'key' => $category->category_id,
+                'folder' => true,
+                'extraClasses' => 'category-node',
+                'children' => []
+            ];
+
+            if ($category->children->isNotEmpty()) {
+                $node['children'] = $this->formatForFancyTree($category->children);
+            }
+
+            $tree[] = $node;
+        }
+
+        return $tree;
     }
 
 
@@ -88,14 +104,11 @@ class DocumentController extends Controller {
             'editors' => 'required|array',
             'readers' => 'required|array',
         ]);
-
-        // 🧠 Convert category_id safely from input (hidden field)
+        
         $category_id = (int) $request->input('category_id', 0);
 
-        // 🧑‍💼 Get currently logged-in user
         $uploaded_by = Auth::id();
 
-        // 🧾 Insert document into DB
         DB::table('documents')->insert([
             'document_subject' => $request->input('subject'),
             'document_text' => $request->input('document_text'), // ← CKEditor content
@@ -149,4 +162,17 @@ class DocumentController extends Controller {
     }
 
 
+    public function getCategoryStructure() {
+
+        $categories = (new Category())->getCategoryTreeWithDocuments();
+        $tree = $this->formatForFancyTree($categories);
+
+        $response = [
+            'status' => 'success',
+            'fancyTree' => $tree,
+        ];
+
+        return response()->json($response);
+
+    }
 }
