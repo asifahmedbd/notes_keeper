@@ -51,6 +51,7 @@ Route::group(['middleware'=> ['auth']],function () {
 
     Route::get('/create/document', 'DocumentController@create')->name('create.document');
     Route::post('/store/document', 'DocumentController@store')->name('store.document');
+    Route::get('/get/category-structure', 'DocumentController@getCategoryStructure');
 
 
 

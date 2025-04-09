@@ -10,12 +10,6 @@
 
     <script src="{{ env('APP_PATH') }}/js/category.js"></script>
 
-    <script type="application/javascript">
-        @foreach($categories as $category)
-            pushToCategoryArray({!! json_encode($category) !!});
-        @endforeach
-    </script>
-
     <div class="row">
         <div class="col-md-12">
             <div class="card-box p-2">
@@ -126,27 +120,8 @@
 
                     <div class="row">
 
-                        <div class="col-md-6">
-                            <div class="table-responsive">
-                                <table class="table table-sm table-bordered mb-0">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Category</th>
-                                        <th>Parent</th>
-                                    </tr>
-                                    </thead>
-
-                                    <tbody id="category_table">
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Mark</td>
-                                        <td>Otto</td>
-                                    </tr>
-                                    </tbody>
-
-                                </table>
-                            </div>
+                        <div class="col-md-6" id="tree">
+                            <div id="fancytree_category_selector" class="border p-2" style="max-height: 400px; overflow-y: auto;"></div>
                         </div>
 
                         <div class="col-md-6">

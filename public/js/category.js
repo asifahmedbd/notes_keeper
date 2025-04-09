@@ -1,9 +1,14 @@
 var app_path = '';
 var categories = [];
+var expandedNodeKey = null;
 
 $(document).ready(function () {
 
     app_path = $('#app_path').val();
+
+
+    initializeFancyTree();
+
 
     $.getScript("https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@36.0.1/build/ckeditor.js", function() {
 
@@ -38,6 +43,7 @@ $(document).ready(function () {
         var category_name = $('#category_name').val();
 
         if (category_name !== '') {
+
             var params = {
                 parent_id: parent_id,
                 category_name: category_name,
@@ -55,7 +61,8 @@ $(document).ready(function () {
                         $('#current_category_id').val(response.category_id);
                         $('#current_category_name').val(category_name);
                         $('#category_name').val('');
-                        pushToCategoryArray(response.category);
+                        //pushToCategoryArray(response.category);
+                        loadAndRenderFancyTree();
                     }
                 },
                 error: function () {
@@ -68,28 +75,8 @@ $(document).ready(function () {
 });
 
 
-function pushToCategoryArray(category) {
-
-    var categoryObject = {};
-
-    for (var key in category) {
-        if (category.hasOwnProperty(key)) {
-            categoryObject[key] = category[key];
-        }
-    }
-
-    this.categories.push(categoryObject);
-
-}
-
-
 function openCategorySelector() {
-
-    var parent_id = '0';
-    renderCategoryTable(parent_id);
-
     $('#select_category_modal').modal('show');
-
 }
 
 
@@ -147,5 +134,78 @@ function getCategory(category_id) {
         }
 
     }
-    
+
+}
+
+
+function initializeFancyTree() {
+
+    $.getScript("https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.38.2/jquery.fancytree-all-deps.min.js")
+        .done(function() {
+            loadAndRenderFancyTree();
+        })
+        .fail(function(jqxhr, settings, exception) {
+            console.error("Failed to load FancyTree:", exception);
+        });
+}
+
+
+function loadAndRenderFancyTree() {
+    $.ajax({
+        url: app_path + '/get/category-structure',
+        method: 'GET',
+        cache: false,
+        success: function (response) {
+            if (response.status === 'success') {
+                renderFancyTree(response.fancyTree);
+            }
+            else {
+                console.error("Failed to load category tree.");
+            }
+        },
+        error: function () {
+            console.error("AJAX error while fetching category structure.");
+        }
+    });
+}
+
+
+function renderFancyTree(fancyTreeData) {
+
+    var $tree = $("#fancytree_category_selector");
+    var treeInstance = $.ui.fancytree.getTree($tree);
+
+    if (treeInstance) {
+        var expandedNode = treeInstance.getActiveNode();
+        if (expandedNode) {
+            expandedNodeKey = expandedNode.key;
+        }
+    }
+
+    if (treeInstance) {
+        treeInstance.destroy();
+    }
+
+    $tree.fancytree({
+        source: fancyTreeData,
+        click: function(event, data) {
+            var node = data.node;
+            if (!node.folder) return;
+
+            $("#current_category_name").val(node.title);
+            $("#category_id").val(node.key);
+            $("#current_category_id").val(node.key);
+            $(".current_category_name").text(node.title);
+        },
+
+        init: function(event, data) {
+            if (expandedNodeKey) {
+                var node = data.tree.getNodeByKey(expandedNodeKey);
+                if (node) {
+                    node.setExpanded(true);
+                    node.setActive();
+                }
+            }
+        }
+    });
 }

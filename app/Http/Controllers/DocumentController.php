@@ -3,28 +3,44 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use DB;
+
+use App\Models\Category;
 
 class DocumentController extends Controller {
 
+
     public function createMemo() {
 
-        $categories = DB::table('categories')
-            ->leftJoin('users', 'categories.uploaded_by', '=', 'users.id')
-            ->select(
-                'categories.*',
-                'users.name as uploaded_by' // Fetch user name
-            )->where('file_type', 'folder')
-            ->get();
-
-        $directoryTree = $this->buildTree($categories);
-
-        $flattenedCategories = $this->flattenCategories($directoryTree);
-        
         return view('app.dashboard.create-memo', [
-            'categories' => $categories,
-            'flattenedCategories' => $flattenedCategories,
+
         ]);
+    }
+
+
+    private function formatForFancyTree($categories) {
+
+        $tree = [];
+
+        foreach ($categories as $category) {
+
+            $node = [
+                'title' => $category->category_name,
+                'key' => $category->category_id,
+                'folder' => true,
+                'extraClasses' => 'category-node',
+                'children' => []
+            ];
+
+            if ($category->children->isNotEmpty()) {
+                $node['children'] = $this->formatForFancyTree($category->children);
+            }
+
+            $tree[] = $node;
+        }
+
+        return $tree;
     }
 
 
@@ -97,6 +113,21 @@ class DocumentController extends Controller {
         Document::create($validated);
 
         return redirect()->route('documents.index')->with('success', 'Document created successfully!');
+    }
+
+
+    public function getCategoryStructure() {
+
+        $categories = (new Category())->getCategoryTreeWithDocuments();
+        $tree = $this->formatForFancyTree($categories);
+
+        $response = [
+            'status' => 'success',
+            'fancyTree' => $tree,
+        ];
+
+        return response()->json($response);
+
     }
 
 }
