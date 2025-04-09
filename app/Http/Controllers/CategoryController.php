@@ -50,4 +50,20 @@ class CategoryController extends Controller {
         return response()->json($response);
     }
 
+    public function getFolderStructure()
+    {
+        $categories = Category::all();
+        $folderStructure = [];
+
+        foreach ($categories as $category) {
+            $folderStructure[] = [
+                'id' => $category->id,
+                'parent' => $category->parent_id == 0 ? '#' : $category->parent_id,
+                'text' => $category->name,
+            ];
+        }
+
+        return response()->json($folderStructure);
+    }
+
 }

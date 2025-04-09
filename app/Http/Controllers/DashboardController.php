@@ -135,8 +135,8 @@ class DashboardController extends Controller {
         //dd($folder_files);
         // For now, simulate folder details (replace with actual DB lookup or logic)
         $folderData = [
-            'folder_name' => $folder_details->file_name,
-            'folder_description' => $folder_details->description,
+            'folder_name' => $folder_details->document_subject,
+            'folder_description' => $folder_details->document_text,
             'folder_created_on' => $folder_details->memo_created_on,
             'folder_created_by' => $folder_details->userDetails->name,
             'folder_files' => $folder_files

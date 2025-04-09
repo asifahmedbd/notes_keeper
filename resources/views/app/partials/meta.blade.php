@@ -15,3 +15,4 @@
 
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <link rel="shortcut icon" href="{{ env('APP_PATH') }}/images/icon.png">
+<meta name="csrf-token" content="{{ csrf_token() }}">

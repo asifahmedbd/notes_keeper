@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Dashboard')
+@section('title', 'Dashboard 3')
 
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -129,49 +129,25 @@
     </div>
 </div>
 
-<!-- <div style="overflow: hidden;width: 800px; ">
-    <div id="#" style="width: 100%; height:550px; overflow: auto;"></div>
-</div> -->
-
-<!-- Modal for Viewing Files -->
-<div class="modal fade" id="viewFileModal" tabindex="-1" aria-labelledby="viewFileModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" style="max-width: 90%;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">File Viewer</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-
-            </div>
-            <div class="modal-body" style="overflow: hidden;">
-                <div id="resolte-contaniner" style="width: 100%; height: 550px; overflow: auto;"></div>
-            </div>
-        </div>
-    </div>
+<div style="overflow: hidden;width: 800px; ">
+    <div id="resolte-contaniner" style="width: 100%; height:550px; overflow: auto;"></div>
 </div>
 
-<!-- Modal for Viewing Video -->
-<div class="modal fade" id="viewVideoModal" tabindex="-1" aria-labelledby="viewVideoModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="max-width: 90%;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Video Viewer</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" style="overflow: hidden;">
-                <!-- Video Player -->
-                <video id="videoPlayer" controls style="width: 100%; height: auto;">
-                    <!-- Video will be loaded dynamically here -->
-                </video>
-            </div>
-        </div>
-    </div>
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="pptxModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-xl"> <!-- Large Modal -->
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalLabel">PPTX Viewer</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<!-- Embedded PPTX File -->
+				<iframe src="" width="100%" height="500px"></iframe>
+			</div>
+		</div>
+	</div>
 </div>
-
-
 
 <script>
     $(document).ready(function() {
@@ -229,12 +205,12 @@
                                 // Display the folder details
                                 let folderDetailsHtml = `
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <h5>Folder: ${response.folder_name}</h5>
+                                        <h5>Folder: ${node.title}</h5>
                                         <button class="btn btn-sm btn-warning edit-memo-btn" data-folder-id="${node.key}">Edit Memo</button>
                                     </div>
                                     <p><strong>Date:</strong> ${response.folder_created_on ?? "N/A"}</p>
                                     <p><strong>Creator:</strong> ${response.folder_created_by ?? "Unknown"}</p>
-                                    <p><strong>Description:</strong> ${response.folder_description ?? "No description available"}</p>
+                                    <p><strong>Description:</strong> ${response.description ?? "No description available"}</p>
                                 `;
 
                                 // Check if there are files in the response
@@ -265,10 +241,10 @@
                                                 <td>${file.file_type ?? "N/A"}</td>
                                                 <td>${file.uploaded_on ?? "N/A"}</td>
                                                 <td>
-                                                    <button class="btn btn-primary btn-xs view-file-btn demos" data-file="demo.pdf" data-file-path="${app_path}/${file.file_path}">
+                                                    <button class="btn btn-primary btn-xs view-file-btn demos" data-file="demo.pptx" data-file-path="${file.file_path}">
                                                         View File
                                                     </button>
-                                                    <button class="btn btn-primary btn-xs view-file-btn download" data-file="demo.pptx" data-file-path="${app_path}/${file.file_path}">
+                                                    <button class="btn btn-primary btn-xs view-file-btn download" data-file="demo.pptx" data-file-path="${file.file_path}">
                                                         Download
                                                     </button>
                                                 </td>
@@ -325,129 +301,62 @@
             console.log("FancyTree initialized successfully!");
         });
 
-        function loadPptxViewer(file_path) {
-            // Load the script only if not already loaded
-            var app_path = $('#app_path').val();
-            $.getScript(app_path + '/include/PPTXjs/js/pptxjs.js', function () {
-                $.getScript(app_path + '/include/PPTXjs/js/divs2slides.js', function () {
-                    renderPptx(file_path);
-                });
-            });
+        $(document).on("click", ".view-file-btn", function() {
+            let filePath = $(this).data("file-path"); // Get file path from button attribute
 
-            function renderPptx(file_path) {
-                const container = $("#resolte-contaniner");
-                container.html("<p id='loading-msg'>Loading presentation...</p>");
+            if (filePath) {
+                // Ensure no extra slashes in the path
+                let cleanedFilePath = filePath.replace(/^\/+/, ''); // Remove leading slash if present
+                console.log("Cleaned file path:", cleanedFilePath); // Debugging 
+                // Construct the full URL
+                // Encode each segment (preserve structure)
+                let encodedPath = cleanedFilePath
+                .split("/")
+                .map(segment => encodeURIComponent(segment))
+                .join("/");
 
-                // Setup a timeout as a fallback
-                const fallbackTimeout = setTimeout(() => {
-                    if (container.find(".slide").length === 0) {
-                        container.html("<p class='text-danger'>Could not display the presentation. Try another file.</p>");
-                    }
-                }, 3000); // You can adjust the time as needed
+                // Construct final file path
+                let fullFilePath = `https://v4463a.unx.vstage.co/notes_keeper/${encodedPath}`;
+                let fullFilePath = ``;
+                console.log("Opening:", fullFilePath); // Debugging
+                // Generate the Microsoft Office Viewer URL
+                let viewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${fullFilePath}`;
 
-                // Load presentation
-                container.pptxToHtml({
-                    pptxFileUrl: file_path,
-                    slideMode: true,
-                    keyBoardShortCut: true,
-                    slideModeConfig: {
-                        toolbar: {
-                            enabled: true,
-                            autoHide: false
-                        }
-                    },
-                    pptxFileConversionComplete: function () {
-                        // Clear loading message
-                        $("#loading-msg").remove();
+                
 
-                        // Cancel fallback if content loaded successfully
-                        clearTimeout(fallbackTimeout);
+                // Update the iframe source dynamically
+                $("#pptxModal iframe").attr("src", viewerUrl);
 
-                        // Run toolbar setup
-                        if (typeof divs2slides === "function") {
-                            divs2slides();
-                        } else {
-                            console.warn("divs2slides not defined.");
-                        }
-                    }
-                });
-            }
-        }
-
-
-        $(document).on("click", ".demos", function () {
-            var app_path = $('#app_path').val();
-            var file_path = $(this).data("file-path");
-            var file_name = file_path.split('/').pop();
-            var extension = file_name.split('.').pop().toLowerCase();
-
-
-            // Define supported video extensions
-            var videoExtensions = ['mp4', 'webm', 'ogg', 'avi', 'mov', 'wmv', 'flv', 'mkv'];
-
-            // Check if the file extension is a video
-            if (videoExtensions.includes(extension)) {
-                // It's a video, so show the video modal
-                $('#viewVideoModal').modal('show');
-                var videoPlayer = $('#videoPlayer');
-        
-                // Clear previous sources before adding new ones
-                videoPlayer.empty();
-
-                // Set video source based on the file path
-                videoPlayer.append('<source src="' + file_path + '" type="video/' + extension + '">');
-
-                // Check if the browser supports the format, and fallback if necessary
-                videoPlayer[0].load();  // Reload the video player to apply the source
-                videoPlayer[0].play();  // Attempt to play the video immediately
-
+                // Show the modal
+                $("#pptxModal").modal("show");
             } else {
-
-                $("#viewFileModal").modal("show");
-                $("#resolte-contaniner").html("");
-
-                if (extension === "pptx") {
-                    loadPptxViewer(file_path);
-                } else {
-                    // Default to officeToHtml for others like .docx, .pdf, etc.
-                    if (typeof $.fn.officeToHtml === "undefined") {
-                        $.getScript(app_path + '/js/officeToHtml.js', function () {
-                            loadOfficeDoc(file_path);
-                        });
-                    } else {
-                        loadOfficeDoc(file_path);
-                    }
-                }
-
-                function loadOfficeDoc(file_path) {
-                    $("#resolte-contaniner").officeToHtml({
-                        url: file_path,
-                        pdfSetting: {
-                            setLang: "",
-                            setLangFilesPath: ""
-                        }
-                    });
-                }
+                alert("Invalid file path!");
             }
         });
 
-        // When modal is closed, reset video source (to stop video)
-        $('#viewVideoModal').on('hidden.bs.modal', function () {
-            var videoPlayer = $('#videoPlayer')[0];
-            videoPlayer.pause();  // Pause the video when closing
-            videoPlayer.src = '';  // Clear the source to stop the video
-        });
 
-        $(document).on("click", ".download", function () {
-            var app_path = $('#app_path').val();
-            var filePath = $(this).data('file-path');
-            var link = document.createElement('a');
-            link.href = filePath;
-            link.download = '';  // Forces download in most browsers
-            $('body').append(link);
-            link.click();
-        });
+        // Handle "View File" button click
+        // $(document).on("click", ".view-file-btn", function() {
+        //     const filePath = $(this).data("file-path");
+        //     $("#fileDetailsModal").modal("show");
+        //     // Fetch file details using AJAX
+        //     $.ajax({
+        //         url: app_path + "{{ route('file.viewer') }}", // Route to fetch file details
+        //         method: "GET",
+        //         data: { filePath: filePath },
+        //         success: function(response) {
+        //             // Load the response into the modal
+        //             $("#fileDetailsContent").html(response);
+        //             // Show the modal
+        //             //$("#fileDetailsModal").modal("show");
+        //         },
+        //         error: function() {
+        //             alert("Failed to load file details.");
+        //         }
+        //     });
+        // });
 
+       
 
     });
 </script>
