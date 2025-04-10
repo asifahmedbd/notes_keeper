@@ -12,12 +12,6 @@
     <script>
         var csrfToken = "{{ csrf_token() }}";
     </script>
-    <script type="application/javascript">
-        @foreach($categories as $category)
-            pushToCategoryArray({!! json_encode($category) !!});
-        @endforeach
-    </script>
-
 
     <div class="row">
         <div class="col-md-12">

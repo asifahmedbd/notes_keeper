@@ -104,8 +104,8 @@ class DocumentController extends Controller {
             'editors' => 'required|array',
             'readers' => 'required|array',
         ]);
-        
-        $category_id = (int) $request->input('category_id', 0);
+
+        $category_id = (int) $request->input('current_category_id', 0);
 
         $uploaded_by = Auth::id();
 

@@ -60,7 +60,6 @@ Route::group(['middleware'=> ['auth']],function () {
     */
 
     Route::post('/create/category', 'CategoryController@addCategory');
-    Route::get('/get-folder-structure', 'CategoryController@getFolderStructure')->name('get-folder-structure');
 
 
     /*
