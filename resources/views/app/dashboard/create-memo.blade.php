@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card-box p-2">
-                <form action="{{ route('store.document') }}" method="POST" enctype="multipart/form-data">
+                <form id="memo-create" action="{{ route('store.document') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row">
@@ -33,7 +33,7 @@
 
                         <div class="col-md-3">
 
-                            <input type="hidden" id="category_id" value="0">
+                            <input type="hidden" id="category_id" name="category_id" value="0">
 
                             <button type="button" class="btn btn-sm btn-dark waves-effect waves-light float-right" onclick="openCategorySelector();">
                                 <i class="mdi mdi-plus-circle mr-1"></i>Select Category
@@ -119,7 +119,7 @@
                 </div>
                 <div class="modal-body p-2">
 
-                    <input type="hidden" id="current_category_id" value="0">
+                <input type="hidden" id="current_category_id" name="current_category_id" value="0">
 
                     <div class="row">
 

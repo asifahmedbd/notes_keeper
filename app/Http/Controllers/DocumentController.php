@@ -105,7 +105,7 @@ class DocumentController extends Controller {
             'readers' => 'required|array',
         ]);
 
-        $category_id = (int) $request->input('current_category_id', 0);
+        $category_id = (int) $request->input('category_id', 0);
 
         $uploaded_by = Auth::id();
 
@@ -124,7 +124,7 @@ class DocumentController extends Controller {
 
         // Optional: Store editors/readers in separate pivot tables if needed later
 
-        return redirect()->back()->with('success', 'Document successfully created!');
+        return redirect()->route('dashboard')->with('success', 'Document successfully created!');
     }
 
     public function uploadFile(Request $request)
@@ -133,13 +133,7 @@ class DocumentController extends Controller {
 
         if ($request->hasFile('upload')) {
             $file = $request->file('upload');
-
-            // Log file details for debugging
-            \Log::info("Uploaded file details:", [
-                'name' => $file->getClientOriginalName(),
-                'type' => $file->getMimeType(),
-                'size' => $file->getSize(),
-            ]);
+            $categoryId = $request->input('category_id', 0);
 
             // Allow PPT and DOC
             $request->validate([
@@ -147,13 +141,22 @@ class DocumentController extends Controller {
             ]);
 
             // Store file
+            $categoryPath = $this->getCategoryFolderPath($categoryId);
             $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('uploads', $filename, 'public');
+            $path = 'notes_data/' . $categoryPath;
+            //$path = $file->storeAs('uploads', $filename, 'public');
 
-            \Log::info("File uploaded successfully at path: " . $path);
+            // Ensure directory exists
+            if (!file_exists(public_path($path))) {
+                mkdir(public_path($path), 0777, true);
+            }
+
+            $file->move(public_path($path), $filename);
 
             return response()->json([
-                'url' => asset('storage/' . $path)
+                'uploaded' => 1,
+                'fileName' => $filename,
+                'url' => asset($path . '/' . $filename)
             ]);
         }
 
@@ -175,4 +178,23 @@ class DocumentController extends Controller {
         return response()->json($response);
 
     }
+
+    public function getCategoryFolderPath($categoryId)
+    {
+        $segments = [];
+
+        while ($categoryId && $category = Category::find($categoryId)) {
+            array_unshift($segments, $this->sanitizeFolderName($category->category_name));
+            $categoryId = $category->parent_id;
+        }
+
+        $fullPath = implode(DIRECTORY_SEPARATOR, $segments);
+        return str_replace('\\', '/', $fullPath); // Normalize for web
+    }
+
+    private function sanitizeFolderName($name)
+    {
+        return preg_replace('/[^\w\- ]+/u', '', $name); // Removes special chars, allows letters, numbers, dash, space
+    }
+
 }

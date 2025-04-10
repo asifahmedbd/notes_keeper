@@ -21,14 +21,14 @@ $(document).ready(function () {
                 const fileInput = document.createElement('input');
                 fileInput.type = 'file';
                 fileInput.style.display = 'none';
-
+    
                 var editingView = editor.editing.view;
                 var viewDocument = editingView.document;
-
+    
                 editingView.change(function(writer) {
                     writer.setStyle('height', '300px', viewDocument.getRoot());
                 });
-
+    
                 editor.ui.focusTracker.on('change:isFocused', function(evt, name, isFocused) {
                     if (isFocused) {
                         editingView.change(function(writer) {
@@ -57,6 +57,10 @@ $(document).ready(function () {
                     formData.append('upload', file);
                     formData.append('_token', csrfToken);
     
+                    // Get category ID from selected category
+                    const categoryId = $('#current_category_id').val() || 0;
+                    formData.append('category_id', categoryId);
+    
                     fetch('/upload-file', {
                         method: 'POST',
                         body: formData
@@ -64,12 +68,9 @@ $(document).ready(function () {
                     .then(response => response.json())
                     .then(data => {
                         if (data.url) {
-                            // Insert link to uploaded file
                             editor.model.change(writer => {
                                 const insertPosition = editor.model.document.selection.getFirstPosition();
                                 writer.insertText(file.name, { linkHref: data.url }, insertPosition);
-                                //writer.insertText(`Download ${file.name}`, { linkHref: data.url }, insertPosition);
-
                             });
                         } else {
                             console.error("Upload failed:", data);
@@ -85,7 +86,7 @@ $(document).ready(function () {
             .catch(error => {
                 console.error('CKEditor initialization failed:', error);
             });
-    });
+    });    
     
     
 
@@ -123,6 +124,16 @@ $(document).ready(function () {
                 }
             });
         }
+    });
+
+    // Ensure that the category_id gets set in the form before submission
+    $('#memo-create').on('submit', function(event) {
+        var categoryId = $('#current_category_id').val(); // Get the current category ID from the modal
+        $('#category_id').val(categoryId); // Set the value in the form's hidden input
+
+        // Optional: Explicitly trigger form submission
+        // No need for event.preventDefault() since we're not preventing default submission
+        this.submit(); // This will submit the form
     });
 
 });
