@@ -14,7 +14,7 @@ $(document).ready(function () {
         ClassicEditor
             .create(document.querySelector('#document_text'))
             .then(editor => {
-                const csrfToken = $('meta[name="csrf-token"]').attr('content');
+                const csrfToken = $('#token').val();
     
                 // Add custom upload file button
                 const toolbarElement = editor.ui.view.toolbar.element;
