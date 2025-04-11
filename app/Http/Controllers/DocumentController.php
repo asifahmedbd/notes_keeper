@@ -92,8 +92,8 @@ class DocumentController extends Controller {
     }
 
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
+
         // 🔒 Validate incoming form data
         $request->validate([
             'subject' => 'required|string|max:255',
@@ -127,8 +127,9 @@ class DocumentController extends Controller {
         return redirect()->route('dashboard')->with('success', 'Document successfully created!');
     }
 
-    public function uploadFile(Request $request)
-    {
+
+    public function uploadFile(Request $request) {
+
         \Log::info("File upload request received");
 
         if ($request->hasFile('upload')) {
@@ -179,8 +180,9 @@ class DocumentController extends Controller {
 
     }
 
-    public function getCategoryFolderPath($categoryId)
-    {
+
+    public function getCategoryFolderPath($categoryId) {
+
         $segments = [];
 
         while ($categoryId && $category = Category::find($categoryId)) {
@@ -192,8 +194,8 @@ class DocumentController extends Controller {
         return str_replace('\\', '/', $fullPath); // Normalize for web
     }
 
-    private function sanitizeFolderName($name)
-    {
+
+    private function sanitizeFolderName($name) {
         return preg_replace('/[^\w\- ]+/u', '', $name); // Removes special chars, allows letters, numbers, dash, space
     }
 
