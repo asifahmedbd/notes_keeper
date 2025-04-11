@@ -61,7 +61,7 @@ $(document).ready(function () {
                     const categoryId = $('#current_category_id').val() || 0;
                     formData.append('category_id', categoryId);
     
-                    fetch('/upload-file', {
+                    fetch(app_path + '/upload-file', {
                         method: 'POST',
                         body: formData
                     })
