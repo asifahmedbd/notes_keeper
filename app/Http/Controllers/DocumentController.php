@@ -106,8 +106,35 @@ class DocumentController extends Controller {
         ]);
 
         $category_id = (int) $request->input('category_id', 0);
-
+        $document_subject = $request->input('subject');
+        $document_text = $request->input('document_text');
+        //dd($document_subject);
         $uploaded_by = Auth::id();
+
+        $categoryPath = $this->getCategoryFolderPath($category_id);
+        $path = 'notes_data/' . $categoryPath;
+
+        // Build full path to new folder
+        $finalFolderPath  = $path.'/'.$document_subject;
+
+        // Create the folder
+        if (!file_exists(public_path($finalFolderPath ))) {
+            mkdir(public_path($finalFolderPath), 0777, true);
+        }
+
+        // Find and move files from temp_upload to actual folder
+        $updatedText = preg_replace_callback('/href="([^"]*\/temp_upload\/([^"]+))"/', function ($matches) use ($finalFolderPath) {
+            $tempPath = public_path('/temp_upload/' . $matches[2]);
+            $finalPath = public_path($finalFolderPath . '/' . $matches[2]);
+
+            if (file_exists($tempPath)) {
+                rename($tempPath, $finalPath); // Move file
+            }
+
+            // Replace the URL in content
+            $newUrl = asset($finalFolderPath . '/' . $matches[2]);
+            return 'href="' . $newUrl . '"';
+        }, $document_text);
 
         DB::table('documents')->insert([
             'document_subject' => $request->input('subject'),
@@ -130,8 +157,6 @@ class DocumentController extends Controller {
 
     public function uploadFile(Request $request) {
 
-        \Log::info("File upload request received");
-
         if ($request->hasFile('upload')) {
             $file = $request->file('upload');
             $categoryId = $request->input('category_id', 0);
@@ -144,8 +169,8 @@ class DocumentController extends Controller {
             // Store file
             $categoryPath = $this->getCategoryFolderPath($categoryId);
             $filename = time() . '_' . $file->getClientOriginalName();
-            $path = 'notes_data/' . $categoryPath;
-            //$path = $file->storeAs('uploads', $filename, 'public');
+            //$path = 'notes_data/' . $categoryPath;
+            $path = '/temp_upload/';
 
             // Ensure directory exists
             if (!file_exists(public_path($path))) {
@@ -161,7 +186,6 @@ class DocumentController extends Controller {
             ]);
         }
 
-        \Log::error("No file received for upload.");
         return response()->json(['error' => 'File upload failed.'], 400);
     }
 
