@@ -62,6 +62,7 @@ Route::group(['middleware'=> ['auth']],function () {
     Route::post('/create/category', 'CategoryController@addCategory');
 
 
+
     /*
     * Directory Scanner Routes
     */
@@ -69,7 +70,27 @@ Route::group(['middleware'=> ['auth']],function () {
     Route::get('/directory-scanner', 'DirectoryScannerController@index')->name('directory.scanner');
     Route::post('/directory-scanner', 'DirectoryScannerController@directoryScanner');
 
-    /*File Upload Routes*/
+
+
+    /*
+    * Document Conversion Routes
+    */
+
+    Route::prefix('conversion')->group(function () {
+
+        Route::get('/document', 'DocumentConversionController@index')->name('document.conversion');
+
+        Route::post('/convert', 'DocumentConversionController@convert');
+        Route::post('/toPDF', 'DocumentConversionController@convertToPDF');
+
+    });
+
+
+
+    /*
+    * File Upload Routes
+    */
+
     Route::post('/upload-file', 'DocumentController@uploadFile')->name('file.upload');
 
 });

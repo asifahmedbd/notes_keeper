@@ -187,7 +187,6 @@ class DocumentController extends Controller {
     }
 
 
-
     public function uploadFile(Request $request) {
 
         if ($request->hasFile('upload')) {

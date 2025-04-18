@@ -1,32 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
+namespace App\Services;
 
 use DB;
 
-use App\Services\Scanner;
-
-class TestController extends Controller {
-
-    protected $startTime;
-    protected $endTime;
+class Conversion {
 
     public function __construct() {
-        $this->startTime = microtime(true);
-    }
-
-
-    public function index() {
-
-        //$this->docConversion();
-        $this->allDocConversion();
 
     }
 
 
-    private function allDocConversion() {
+    public function convert() {
 
         $file_types = [
             'doc',
@@ -44,7 +29,7 @@ class TestController extends Controller {
 
         $results = $query->limit(300)->get();
 
-        echo "Count: " . count($results) . "<br><br>";
+        $response['count'] = count($results);
 
         foreach ($results as $result) {
 
@@ -57,13 +42,13 @@ class TestController extends Controller {
 
             $success = $this->convertToModernFormat($input, $outputDir);
 
-            echo "original_file_name: $original_file_name" . "<br>";
-            echo "inputPath: $inputPath" . "<br>";
-            echo "outputDir: $outputDir" . "<br>";
+            //echo "original_file_name: $original_file_name" . "<br>";
+            //echo "inputPath: $inputPath" . "<br>";
+            //echo "outputDir: $outputDir" . "<br>";
 
             if ($success) {
 
-                echo "Converted: {$original_file_name} <br>";
+                //echo "Converted: {$original_file_name} <br>";
 
                 $newExtension = pathinfo($this->convertExtension($original_file_name), PATHINFO_EXTENSION);
                 $newOriginalFileName = $this->replaceExtension($original_file_name, $newExtension);
@@ -77,7 +62,7 @@ class TestController extends Controller {
                         'file_type' => $newExtension,
                     ]);
 
-                echo "Updated DB: {$newOriginalFileName} <br><br>";
+                //echo "Updated DB: {$newOriginalFileName} <br><br>";
 
             }
             else {
@@ -86,10 +71,12 @@ class TestController extends Controller {
 
         }
 
+        return $response;
+
     }
 
 
-    public function convertToModernFormat($inputPath, $outputDir) {
+    private function convertToModernFormat($inputPath, $outputDir) {
 
         putenv('HOME=/tmp');
 
@@ -129,7 +116,7 @@ class TestController extends Controller {
     }
 
 
-    function getFolderPath($fullPath, $fileName) {
+    private function getFolderPath($fullPath, $fileName) {
 
         if (str_ends_with($fullPath, $fileName)) {
             $folderPath = substr($fullPath, 0, -strlen($fileName));
@@ -156,39 +143,29 @@ class TestController extends Controller {
     }
 
 
-    private function docConversion() {
-
-        $input = public_path('notes_data_backup/input.doc');
-        $outputDir = public_path('notes_data_backup');
-
-        $success = $this->convertDocToDocx($input, $outputDir);
-
-        return $success ? 'Conversion successful!' : 'Conversion failed!';
-
-    }
-
-
-    public function convertDocToDocx($inputPath, $outputDir) {
-
+    public function convertToPDF($file_path) {
+        //exit($file_path);
         putenv('HOME=/tmp');
-
         $libreOfficePath = 'libreoffice';
-        $command = "{$libreOfficePath} --headless --convert-to docx --outdir {$outputDir} {$inputPath}";
+
+        $directoryPath = dirname($file_path) . '/';
+
+        //$inputPathEscaped = '"' . addcslashes($file_path, '"') . '"';
+        //$inputPathEscaped = escapeshellarg($file_path);
+        $outputDirEscaped = '"' . addcslashes($directoryPath, '"') . '"';
+        //$outputDirEscaped = '"/var/www/html/notes_keeper/public/temp_upload"';
+
+        $command = "{$libreOfficePath} --headless --convert-to pdf \"{$file_path}\" --outdir {$outputDirEscaped}";
         //exit($command);
         exec($command . ' 2>&1', $output, $return_var);
 
-        \Log::info("LibreOffice command: $command");
-        \Log::info("LibreOffice output: " . print_r($output, true));
-        \Log::info("LibreOffice exit code: $return_var");
+        if ($return_var === 0) {
+            $pdfPath = preg_replace('/\.pptx?$/i', '.pdf', $file_path);
+            return $pdfPath;
+        }
 
-        return $return_var === 0;
-    }
+        return null;
 
-
-    function __destruct() {
-        $this->endTime = microtime(true);
-        $executionTime = $this->endTime - $this->startTime;
-        echo "<br>Execution time: " . number_format($executionTime, 4) . " seconds";
     }
 
 }
