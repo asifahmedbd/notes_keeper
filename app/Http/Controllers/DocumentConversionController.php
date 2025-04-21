@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Services\Conversion;
 
+use App\Models\DocumentFile;
+
 class DocumentConversionController extends Controller {
 
 
@@ -36,17 +38,21 @@ class DocumentConversionController extends Controller {
 
         $data = $request->input('params');
 
+        $file_id = $data['file_id'];
         $file_path = $data['file_path'];
-        //exit($$data);
-        $absolute_path = str_replace('/notes_keeper/', '/var/www/html/notes_keeper/public/', $file_path);
 
+        $documents_file = DocumentFile::find($file_id);
+        $file_path = $documents_file->file_path;
+        //echo "file_path: $file_path<br>";
+        $absolute_path = "/var/www/html/notes_keeper/public/{$file_path}";
+        //echo "absolute_path: $absolute_path<br>";
+        //exit();
         $conversion = new Conversion();
         $file_path = $conversion->convertToPDF($absolute_path);
 
         $response = [
             'status' => 'success',
-            'file_path' => '/notes_keeper/notes_data/PDM Access Request/Description on PDM Business Roles/PDM Business Roles v1.1.pdf',
-            //'file_path' => $file_path,
+            'file_path' => $file_path,
         ];
 
         return response()->json($response);

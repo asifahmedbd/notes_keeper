@@ -76,7 +76,7 @@ class Conversion {
     }
 
 
-    private function convertToModernFormat($inputPath, $outputDir) {
+    private function convertToModernFormat($inputPath, $outputDir, $targetFormat = NULL) {
 
         putenv('HOME=/tmp');
 
@@ -92,25 +92,25 @@ class Conversion {
             'xls' => 'xlsx',
         ];
 
-        if (!isset($formatMap[$extension])) {
+        if (!isset($formatMap[$extension]) || $targetFormat == NULL) {
             //exit("Unsupported file format: .$extension");
-            return false;
+            //return false;
         }
 
-        $targetFormat = $formatMap[$extension];
+        if ($targetFormat == NULL) $targetFormat = $formatMap[$extension];
 
         // SAFELY ESCAPE paths
         $inputPathEscaped = '"' . addcslashes($inputPath, '"') . '"';
         $outputDirEscaped = '"' . addcslashes($outputDir, '"') . '"';
-
+        //dd(is_readable($inputPath), is_writable($outputDir));
         $command = "{$libreOfficePath} --headless --convert-to {$targetFormat} --outdir {$outputDirEscaped} {$inputPathEscaped}";
         //exit($command);
 
         exec($command . ' 2>&1', $output, $return_var);
 
-        //\Log::info("LibreOffice command: $command");
-        //\Log::info("LibreOffice output: " . print_r($output, true));
-        //\Log::info("LibreOffice exit code: $return_var");
+        \Log::info("LibreOffice command: $command");
+        \Log::info("LibreOffice output: " . print_r($output, true));
+        \Log::info("LibreOffice exit code: $return_var");
 
         return $return_var === 0;
     }
@@ -144,27 +144,11 @@ class Conversion {
 
 
     public function convertToPDF($file_path) {
-        //exit($file_path);
-        putenv('HOME=/tmp');
-        $libreOfficePath = 'libreoffice';
 
         $directoryPath = dirname($file_path) . '/';
 
-        //$inputPathEscaped = '"' . addcslashes($file_path, '"') . '"';
-        //$inputPathEscaped = escapeshellarg($file_path);
-        $outputDirEscaped = '"' . addcslashes($directoryPath, '"') . '"';
-        //$outputDirEscaped = '"/var/www/html/notes_keeper/public/temp_upload"';
-
-        $command = "{$libreOfficePath} --headless --convert-to pdf \"{$file_path}\" --outdir {$outputDirEscaped}";
-        //exit($command);
-        exec($command . ' 2>&1', $output, $return_var);
-
-        if ($return_var === 0) {
-            $pdfPath = preg_replace('/\.pptx?$/i', '.pdf', $file_path);
-            return $pdfPath;
-        }
-
-        return null;
+        $targetFormat = 'pdf';
+        $this->convertToModernFormat($file_path, $directoryPath, $targetFormat);
 
     }
 

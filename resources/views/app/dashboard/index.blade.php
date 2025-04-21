@@ -179,6 +179,7 @@
             //var folderDetailsHtml = "<p>No folder details available.</p>";
 
             var app_path = $('#app_path').val();
+            var file_id;
 
             $.getScript("https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.38.2/jquery.fancytree-all-deps.min.js", function() {
                 console.log("FancyTree script loaded!");
@@ -265,7 +266,7 @@
                                                 <td>${file.file_type ?? "N/A"}</td>
                                                 <td>${file.uploaded_on ?? "N/A"}</td>
                                                 <td>
-                                                    <button class="btn btn-primary btn-xs view-file-btn demos" data-file="demo.pdf" data-file-path="${app_path}/${file.file_path}">
+                                                    <button class="btn btn-primary btn-xs view-file-btn demos" data-file="demo.pdf" data-file-path="${app_path}/${file.file_path}" data-file-id="${file.file_id}">
                                                         View File
                                                     </button>
                                                     <button class="btn btn-primary btn-xs view-file-btn download" data-file="demo.pptx" data-file-path="${app_path}/${file.file_path}">
@@ -342,6 +343,7 @@
                     // Setup a timeout as a fallback
                     setTimeout(function () {
                         if (container.find(".slide").length === 0) {
+
                             console.warn("PPTX rendering failed. Attempting to convert to PDF...");
 
                             $.ajax({
@@ -352,7 +354,8 @@
                                 },
                                 data: {
                                     params: {
-                                        file_path: file_path
+                                        file_id: file_id,
+                                        file_path: file_path,
                                     }
                                 },
                                 success: function (response) {
@@ -402,7 +405,9 @@
 
 
             $(document).on("click", ".demos", function () {
+
                 var app_path = $('#app_path').val();
+                file_id = $(this).data("file-id");
                 var file_path = $(this).data("file-path");
                 var file_name = file_path.split('/').pop();
                 var extension = file_name.split('.').pop().toLowerCase();
