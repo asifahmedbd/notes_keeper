@@ -16,26 +16,62 @@ $(document).ready(function () {
             .then(editor => {
                 const csrfToken = $('#token').val();
     
-                // Add custom upload file button
-                const toolbarElement = editor.ui.view.toolbar.element;
-                const fileInput = document.createElement('input');
-                fileInput.type = 'file';
-                fileInput.style.display = 'none';
+                // ✅ Add custom upload adapter for CKEditor image upload
+                editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                    return {
+                        upload: () => {
+                            return loader.file.then(file => {
+                                const formData = new FormData();
+                                formData.append('upload', file);
+                                formData.append('_token', csrfToken);
     
-                var editingView = editor.editing.view;
-                var viewDocument = editingView.document;
+                                // Optional: pass category_id if needed
+                                const categoryId = $('#current_category_id').val() || 0;
+                                formData.append('category_id', categoryId);
     
-                editingView.change(function(writer) {
+                                return fetch(app_path + '/upload-file', {
+                                    method: 'POST',
+                                    body: formData
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.url) {
+                                        return {
+                                            default: data.url
+                                        };
+                                    } else {
+                                        return Promise.reject(data.error?.message || 'Upload failed');
+                                    }
+                                });
+                            });
+                        },
+                        abort: () => {
+                            // Optional: abort upload logic
+                        }
+                    };
+                };
+    
+                // 🧠 Editor height adjustment
+                const editingView = editor.editing.view;
+                const viewDocument = editingView.document;
+    
+                editingView.change(writer => {
                     writer.setStyle('height', '300px', viewDocument.getRoot());
                 });
     
-                editor.ui.focusTracker.on('change:isFocused', function(evt, name, isFocused) {
+                editor.ui.focusTracker.on('change:isFocused', (evt, name, isFocused) => {
                     if (isFocused) {
-                        editingView.change(function(writer) {
+                        editingView.change(writer => {
                             writer.setStyle('height', '300px', viewDocument.getRoot());
                         });
                     }
                 });
+    
+                // 📎 Add custom toolbar file upload (non-image)
+                const toolbarElement = editor.ui.view.toolbar.element;
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.style.display = 'none';
     
                 const uploadButton = document.createElement('button');
                 uploadButton.type = 'button';
@@ -57,7 +93,6 @@ $(document).ready(function () {
                     formData.append('upload', file);
                     formData.append('_token', csrfToken);
     
-                    // Get category ID from selected category
                     const categoryId = $('#current_category_id').val() || 0;
                     formData.append('category_id', categoryId);
     
@@ -82,11 +117,13 @@ $(document).ready(function () {
                         alert("An error occurred while uploading the file.");
                     });
                 });
+    
             })
             .catch(error => {
                 console.error('CKEditor initialization failed:', error);
             });
-    });    
+    
+    });  
     
     
 

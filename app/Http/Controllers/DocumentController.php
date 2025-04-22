@@ -192,11 +192,15 @@ class DocumentController extends Controller {
         if ($request->hasFile('upload')) {
             $file = $request->file('upload');
             $categoryId = $request->input('category_id', 0);
-
-            // Allow PPT and DOC
-            $request->validate([
-                'upload' => 'required|mimes:jpg,jpeg,png,gif,doc,docx,pdf,zip,txt,ppt,pptx|max:20480' // 20MB limit
-            ]);
+            
+            $ext = strtolower($file->getClientOriginalExtension());
+            $allowedExts = ['jpg','jpeg','png','gif','doc','docx','pdf','zip','txt','ppt','pptx'];
+            if (!in_array($ext, $allowedExts)) {
+                return response()->json([
+                    'uploaded' => 0,
+                    'error' => ['message' => 'Invalid file extension.']
+                ], 422);
+            }
 
             // Store file
             $categoryPath = $this->getCategoryFolderPath($categoryId);
