@@ -289,11 +289,11 @@
                                             <tbody>
                                                 <tr>
                                                     <th>Status</th>
-                                                    <td>${response.document_status ?? "Draft"}</td>
+                                                    <td>${response.folder_status ?? "Draft"}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Category</th>
-                                                    <td>${response.document_category ?? "PDM Access Request"}</td>
+                                                    <td>${response.folder_category ?? "PDM Access Request"}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Keywords</th>

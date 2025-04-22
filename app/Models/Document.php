@@ -23,4 +23,9 @@ class Document extends Model {
     public function userDetails() {
         return $this->belongsTo('App\Models\User', 'uploaded_by', 'id');
     }
+
+    public function category(){
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
 }

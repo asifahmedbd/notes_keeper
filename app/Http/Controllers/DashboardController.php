@@ -128,7 +128,7 @@ class DashboardController extends Controller {
         
         $folderId = $request->get('folderId');
 
-        $folder_details = Document::with('userDetails')->where('document_id', $folderId)->first();
+        $folder_details = Document::with(['userDetails', 'category'])->where('document_id', $folderId)->first();
         //dd($folder_details);
 
         $folder_files = DB::table('documents_files')->where('document_id', $folderId)->get();
@@ -139,6 +139,8 @@ class DashboardController extends Controller {
             'folder_description' => $folder_details->document_text,
             'folder_created_on' => $folder_details->memo_created_on,
             'folder_created_by' => $folder_details->userDetails->name,
+            'folder_category' => $folder_details->category->category_name ?? 'No Category',
+            'folder_status' => $folder_details->doc_status ?? 'N/A',
             'folder_files' => $folder_files
         ];
 
