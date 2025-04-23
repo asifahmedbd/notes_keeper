@@ -22,6 +22,46 @@
             color: red !important;
             font-style: italic;
         }
+
+        figure.table {
+            overflow-x: auto;
+            margin: 1em 0;
+        }
+
+        figure.table table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        figure.table td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        /* Style first row like a header */
+        figure.table tbody tr:first-child td {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        /* Zebra striping for better readability */
+        figure.table tbody tr:not(:first-child):nth-child(even) td {
+            background-color: #fafafa;
+        }
+
+        figure.table a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        figure.table a:hover {
+            text-decoration: underline;
+        }
+
+
     </style>
 
     <!-- Required CSS -->
@@ -175,6 +215,35 @@
 
     <script>
         $(document).ready(function() {
+
+            $('.button-menu-mobile').trigger('click');
+
+            function formatFileSize(bytes, decimals = 2) {
+                if (bytes === 0) return '0 B';
+                const k = 1024;
+                const dm = decimals < 0 ? 0 : decimals;
+                const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+            }
+
+            const mimeToExtension = {
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+                'application/msword': 'doc',
+                'application/pdf': 'pdf',
+                'application/zip': 'zip',
+                'text/plain': 'txt',
+                'image/jpeg': 'jpg',
+                'image/png': 'png',
+                'image/gif': 'gif',
+                'application/vnd.ms-powerpoint': 'ppt',
+                // Add more as needed
+            };
+
+
+
             // Load FancyTree script first
             //var folderDetailsHtml = "<p>No folder details available.</p>";
 
@@ -262,8 +331,8 @@
                                             <tr>
                                                 <td>${index + 1}</td>
                                                 <td>${file.file_name ?? "N/A"}</td>
-                                                <td>${file.file_size ?? "N/A"}</td>
-                                                <td>${file.file_type ?? "N/A"}</td>
+                                                <td>${file.file_size ? formatFileSize(file.file_size) : "N/A"}</td>
+                                                <td>${mimeToExtension[file.file_type] ?? file.file_type ?? "N/A"}</td>
                                                 <td>${file.uploaded_on ?? "N/A"}</td>
                                                 <td>
                                                     <button class="btn btn-primary btn-xs view-file-btn demos" data-file="demo.pdf" data-file-path="${app_path}/${file.file_path}" data-file-id="${file.file_id}">
