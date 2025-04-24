@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 
 use App\Models\Category;
+use App\Models\Document;
 
 class DocumentController extends Controller {
 
@@ -258,5 +259,13 @@ class DocumentController extends Controller {
     private function sanitizeFolderName($name) {
         return preg_replace('/[^\w\- ]+/u', '', $name); // Removes special chars, allows letters, numbers, dash, space
     }
+
+    public function edit($id) {
+        
+        $memo = Document::with(['userDetails', 'category'])->findOrFail($id);
+        //dd($memo);
+        return view('app.dashboard.edit-memo', compact('memo'));
+    }
+
 
 }

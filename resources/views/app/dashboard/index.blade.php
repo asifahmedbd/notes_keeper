@@ -548,6 +548,14 @@
                 link.click();
             });
 
+            $(document).on('click', '.edit-memo-btn', function () {
+                var app_path = $('#app_path').val();
+                const folderId = $(this).data('folder-id');
+                if (folderId) {
+                    window.location.href = `${app_path}/document/edit/${folderId}`;
+                }
+            });
+
 
         });
     </script>
