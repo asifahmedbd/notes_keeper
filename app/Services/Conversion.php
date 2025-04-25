@@ -82,10 +82,9 @@ class Conversion {
 
         $libreOfficePath = 'libreoffice';
 
-        // Get extension of input file
         $extension = strtolower(pathinfo($inputPath, PATHINFO_EXTENSION));
+        $filenameWithoutExt = pathinfo($inputPath, PATHINFO_FILENAME);
 
-        // Define supported conversions
         $formatMap = [
             'doc' => 'docx',
             'ppt' => 'pptx',
@@ -99,7 +98,6 @@ class Conversion {
 
         if ($targetFormat == NULL) $targetFormat = $formatMap[$extension];
 
-        // SAFELY ESCAPE paths
         $inputPathEscaped = '"' . addcslashes($inputPath, '"') . '"';
         $outputDirEscaped = '"' . addcslashes($outputDir, '"') . '"';
         //dd(is_readable($inputPath), is_writable($outputDir));
@@ -108,11 +106,30 @@ class Conversion {
 
         exec($command . ' 2>&1', $output, $return_var);
 
-        \Log::info("LibreOffice command: $command");
-        \Log::info("LibreOffice output: " . print_r($output, true));
-        \Log::info("LibreOffice exit code: $return_var");
+        //\Log::info("LibreOffice command: $command");
+        //\Log::info("LibreOffice output: " . print_r($output, true));
+        //\Log::info("LibreOffice exit code: $return_var");
 
-        return $return_var === 0;
+        if ($return_var === 0) {
+
+            $newFilePath = rtrim($outputDir, '/') . '/' . $filenameWithoutExt . '.' . $targetFormat;
+
+            if (file_exists($newFilePath)) {
+                // Extract path after /public/
+                $publicPos = strpos($newFilePath, '/public/');
+                if ($publicPos !== false) {
+                    $relativePath = substr($newFilePath, $publicPos + strlen('/public/'));
+                    $finalPath = env('APP_PATH', '') . '/'. $relativePath;
+                    return $finalPath;
+                }
+
+                // fallback to full path if /public/ not found
+                return $newFilePath;
+            }
+
+        }
+
+        return false;
     }
 
 
@@ -148,7 +165,7 @@ class Conversion {
         $directoryPath = dirname($file_path) . '/';
 
         $targetFormat = 'pdf';
-        $this->convertToModernFormat($file_path, $directoryPath, $targetFormat);
+        return $this->convertToModernFormat($file_path, $directoryPath, $targetFormat);
 
     }
 
