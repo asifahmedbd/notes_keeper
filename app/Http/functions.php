@@ -25,3 +25,13 @@ function createFolderIfNotExists($folderPath, $location='public') {
     if (! is_dir($directoryPath)) mkdir($directoryPath, 0755, true);
 }
 
+
+function formatDate($date, $format='F j, Y') {
+    return date($format, strtotime( $date ));
+}
+
+
+function camelize($input, $separator = '_') {
+    return str_replace($separator, ' ', ucwords($input, $separator));
+}
+

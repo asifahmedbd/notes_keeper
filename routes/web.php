@@ -94,4 +94,16 @@ Route::group(['middleware'=> ['auth']],function () {
 
     Route::post('/upload-file', 'DocumentController@uploadFile')->name('file.upload');
 
+
+
+    /*
+    * User Routes
+    */
+
+    Route::get('/users', 'UserController@index')->name('user');
+    Route::post('/add/user', 'UserController@addUser');
+    Route::post('/edit/user', 'UserController@editUser');
+    Route::post('/delete/user', 'UserController@deleteUser');
+    Route::post('/update/user-password', 'UserController@updateUserPassword');
+
 });
