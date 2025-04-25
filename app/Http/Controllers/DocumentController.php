@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 
 use App\Models\Category;
+use App\Models\Document;
 
 class DocumentController extends Controller {
 
@@ -192,11 +193,15 @@ class DocumentController extends Controller {
         if ($request->hasFile('upload')) {
             $file = $request->file('upload');
             $categoryId = $request->input('category_id', 0);
-
-            // Allow PPT and DOC
-            $request->validate([
-                'upload' => 'required|mimes:jpg,jpeg,png,gif,doc,docx,pdf,zip,txt,ppt,pptx|max:20480' // 20MB limit
-            ]);
+            
+            $ext = strtolower($file->getClientOriginalExtension());
+            $allowedExts = ['jpg','jpeg','png','gif','doc','docx','pdf','zip','txt','ppt','pptx'];
+            if (!in_array($ext, $allowedExts)) {
+                return response()->json([
+                    'uploaded' => 0,
+                    'error' => ['message' => 'Invalid file extension.']
+                ], 422);
+            }
 
             // Store file
             $categoryPath = $this->getCategoryFolderPath($categoryId);
@@ -254,5 +259,13 @@ class DocumentController extends Controller {
     private function sanitizeFolderName($name) {
         return preg_replace('/[^\w\- ]+/u', '', $name); // Removes special chars, allows letters, numbers, dash, space
     }
+
+    public function edit($id) {
+        
+        $memo = Document::with(['userDetails', 'category'])->findOrFail($id);
+        //dd($memo);
+        return view('app.dashboard.edit-memo', compact('memo'));
+    }
+
 
 }
