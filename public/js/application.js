@@ -127,3 +127,8 @@ function randomString(length) {
 
     return text ;
 }
+
+
+function uc_first(string) {
+    return string.substr(0,1).toUpperCase()+string.substr(1);
+}

@@ -4,25 +4,24 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-class AppServiceProvider extends ServiceProvider
-{
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
+use Spatie\Permission\Models\Role;
+
+class AppServiceProvider extends ServiceProvider {
+
+
+    public function register() {
+
     }
 
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
+
+    public function boot() {
+
+        $roles = ['admin', 'editor', 'reader'];
+
+        foreach ($roles as $role) {
+            Role::firstOrCreate(['name' => $role]);
+        }
+
     }
+
 }

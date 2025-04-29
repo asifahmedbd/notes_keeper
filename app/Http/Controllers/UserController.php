@@ -39,6 +39,7 @@ class UserController extends Controller {
         $user->save();
         $id = $user->id;
 
+        $user->assignRole($data['role']);
 
         return json_encode($id);
     }
@@ -54,6 +55,8 @@ class UserController extends Controller {
         $user->role = $data['role'];
 
         $user->save();
+
+        $user->assignRole($data['role']);
 
         return json_encode('success');
     }

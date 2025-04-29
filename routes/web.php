@@ -106,4 +106,15 @@ Route::group(['middleware'=> ['auth']],function () {
     Route::post('/delete/user', 'UserController@deleteUser');
     Route::post('/update/user-password', 'UserController@updateUserPassword');
 
+
+
+
+    /*
+    * Role Permission Routes
+    */
+
+    Route::get('/role-permission', 'AccessController@index')->name('role.permission');
+    Route::get('/role-permission/{role}/permissions', 'AccessController@getRolePermissions');
+    Route::post('/role-permission', 'AccessController@updatePermission');
+
 });

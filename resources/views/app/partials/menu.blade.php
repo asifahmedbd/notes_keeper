@@ -12,6 +12,8 @@
 
         <li><a href="{{ route('user') }}"><i class="fa fa-users"></i><span>Users</span></a></li>
 
+        <li><a href="{{ route('role.permission') }}"><i class="mdi mdi-security"></i><span>Role Permission</span></a></li>
+
         <li>
             <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                 <i class="fe-power mr-1 text-danger"></i>
