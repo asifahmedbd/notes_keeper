@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class AccessController extends Controller {
 
@@ -66,6 +67,7 @@ class AccessController extends Controller {
         }
 
         $role->syncPermissions($permissions);
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         return response()->json(['status' => 'success', 'message' => 'Permissions updated successfully.']);
 

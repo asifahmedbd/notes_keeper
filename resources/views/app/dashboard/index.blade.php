@@ -112,13 +112,13 @@
     <script src="{{ asset('js/officeToHtml.js') }}?v={{ time() }}"></script>
     <link rel="stylesheet" href="{{ asset('css/officeToHtml.css') }}">
 
-    @if(auth()->user()->can('create_memo'))
+    @can('create_memo')
         <div class="row mb-3">
             <div class="col text-end">
                 <a href="{{ route('memo.create') }}" class="btn btn-primary">New Memo</a>
             </div>
         </div>
-    @endif
+    @endcan
 
     <div class="row">
         <div class="col-md-5">

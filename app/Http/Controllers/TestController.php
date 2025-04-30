@@ -8,6 +8,8 @@ use DB;
 
 use App\Services\Scanner;
 
+use App\Models\User;
+
 class TestController extends Controller {
 
     protected $startTime;
@@ -21,8 +23,14 @@ class TestController extends Controller {
     public function index() {
 
         //$this->docConversion();
-        $this->allDocConversion();
+        //$this->allDocConversion();
 
+        /*
+        $user = User::find(1);
+        echo "<pre>";
+        var_dump($user->getRoleNames());
+        var_dump($user->getAllPermissions()->pluck('name'));
+        */
     }
 
 
