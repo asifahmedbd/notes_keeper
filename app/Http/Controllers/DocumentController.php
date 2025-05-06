@@ -138,8 +138,9 @@ class DocumentController extends Controller {
 
         // 🧠 Parse and move files from temp_upload, and update document_text
         $updatedText = preg_replace_callback('/href="([^"]*\/temp_upload\/([^"]+))"/', function ($matches) use ($finalFolderPath, $documentId, $uploaded_by) {
-            $fileName = $matches[2];
-            $tempPath = public_path('/temp_upload' . $fileName);
+            //$fileName = $matches[2];
+            $fileName = ltrim($matches[2], '/'); // Remove leading slash if present
+            $tempPath = public_path('temp_upload/' . $fileName);
             $finalPath = public_path($finalFolderPath . '/' . $fileName);
 
             Log::info('Checking if file exists at: ' . $tempPath);
@@ -266,6 +267,124 @@ class DocumentController extends Controller {
         //dd($memo);
         return view('app.dashboard.edit-memo', compact('memo'));
     }
+
+    public function update(Request $request){
+        
+        $request->validate([
+            'subject' => 'required|string|max:255',
+            'document_text' => 'required|string',
+            'document_status' => 'required|string|max:10',
+            'unit' => 'required|string|max:255',
+            'keywords' => 'nullable|string|max:255',
+            'editors' => 'required|array',
+            'readers' => 'required|array',
+        ]);
+
+        $documentId = $request->input('document_id');
+        $document = DB::table('documents')->where('document_id', $documentId)->first();
+
+        if (!$document) {
+            return redirect()->back()->with('error', 'Document not found.');
+        }
+
+        $category_id = (int) $request->input('category_id', 0);
+        $document_subject = $request->input('subject');
+        $document_text = $request->input('document_text');
+        $uploaded_by = Auth::id();
+
+        // Calculate folder paths
+        $oldFolderPath = 'notes_data/' . $this->getCategoryFolderPath($document->category_id) . '/' . $document->document_subject;
+        $newFolderPath = 'notes_data/' . $this->getCategoryFolderPath($category_id) . '/' . $document_subject;
+
+        $oldAbsolutePath = public_path($oldFolderPath);
+        $newAbsolutePath = public_path($newFolderPath);
+
+        // Move existing folder if changed
+        if ($oldFolderPath !== $newFolderPath) {
+            if (!file_exists($newAbsolutePath)) {
+                mkdir($newAbsolutePath, 0777, true);
+            }
+
+            $movedFiles = [];
+
+            if (file_exists($oldAbsolutePath)) {
+                foreach (glob($oldAbsolutePath . '/*') as $oldFilePath) {
+                    $fileName = basename($oldFilePath);
+                    $newFilePath = $newAbsolutePath . '/' . $fileName;
+
+                    rename($oldFilePath, $newFilePath);
+                    $movedFiles[$fileName] = $newFolderPath . '/' . $fileName;
+                }
+
+                @rmdir($oldAbsolutePath);
+
+                // Update document_text links
+                foreach ($movedFiles as $fileName => $newRelPath) {
+                    $oldUrl = asset($oldFolderPath . '/' . $fileName);
+                    $newUrl = asset($newRelPath);
+                    $document_text = str_replace($oldUrl, $newUrl, $document_text);
+                }
+
+                // Update file paths in DB
+                foreach ($movedFiles as $fileName => $newRelPath) {
+                    DB::table('documents_files')
+                        ->where('document_id', $documentId)
+                        ->where('file_name', $fileName)
+                        ->update(['file_path' => $newRelPath]);
+                }
+            }
+        }
+
+        // Move new files from temp_upload and update text
+        $updatedText = preg_replace_callback('/href="([^"]*\/temp_upload\/([^"]+))"/', function ($matches) use ($newFolderPath, $documentId, $uploaded_by) {
+            $fileName = $matches[2];
+            $tempPath = public_path('/temp_upload' . $fileName);
+            $finalPath = public_path($newFolderPath . '/' . $fileName);
+
+            if (file_exists($tempPath)) {
+                try {
+                    rename($tempPath, $finalPath);
+
+                    $fileSize = File::size($finalPath);
+                    $fileType = File::mimeType($finalPath);
+                    $filePath = $newFolderPath . '/' . $fileName;
+
+                    DB::table('documents_files')->insert([
+                        'file_name' => $fileName,
+                        'original_file_name' => $fileName,
+                        'description' => null,
+                        'file_path' => $filePath,
+                        'file_type' => $fileType,
+                        'file_size' => $fileSize,
+                        'document_id' => $documentId,
+                        'uploaded_by' => $uploaded_by,
+                        'memo_created_on' => now(),
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error("File move failed: " . $e->getMessage());
+                }
+            }
+
+            return 'href="' . asset($newFolderPath . '/' . $fileName) . '"';
+        }, $document_text);
+
+        // Update document table
+        DB::table('documents')->where('document_id', $documentId)->update([
+            'document_subject' => $document_subject,
+            'document_text' => $updatedText,
+            'doc_status' => $request->input('document_status'),
+            'doc_unit' => $request->input('unit'),
+            'doc_keywords' => $request->input('keywords'),
+            'category_id' => $category_id,
+            'updated_at' => now(),
+        ]);
+
+        // TODO: Handle updating editors and readers if needed
+
+        return redirect()->route('dashboard')->with('success', 'Document successfully updated!');
+    }
+
+
 
 
 }

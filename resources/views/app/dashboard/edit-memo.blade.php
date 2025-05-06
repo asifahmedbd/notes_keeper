@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card-box p-2">
-                <form id="memo-create" action="{{ route('store.document') }}" method="POST" enctype="multipart/form-data">
+                <form id="memo-create" action="{{ route('update.document') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row">
@@ -33,7 +33,7 @@
 
                         <div class="col-md-3">
 
-                            <input type="hidden" id="category_id" name="category_id" value="0">
+                            <input type="hidden" id="category_id" name="category_id" value="{{ $memo->category_id ?? 0 }}">
 
                             <button type="button" class="btn btn-sm btn-dark waves-effect waves-light float-right" onclick="openCategorySelector();">
                                 <i class="mdi mdi-plus-circle mr-1"></i>Select Category
@@ -64,13 +64,13 @@
                             <!-- Unit Dropdown -->
                             <div class="col-md-4">
                                 <label for="unit" class="form-label">Unit</label>
-                                <input type="text" class="form-control" id="unit" name="unit" placeholder="Enter unit" required>
+                                <input type="text" class="form-control" id="unit" name="unit" value="{{ old('doc_unit', $memo->doc_unit) }}" placeholder="Enter unit" required>
                             </div>
 
                             <!-- Keywords (Multiselect Text Input) -->
                             <div class="col-md-4">
                                 <label for="keywords" class="form-label">Keywords</label>
-                                <input type="text" id="keywords" name="keywords" class="form-control" placeholder="Enter keywords, separated by commas">
+                                <input type="text" id="keywords" name="keywords" class="form-control" placeholder="Enter keywords, separated by commas" value="{{ old('doc_keywords', $memo->doc_keywords) }}">
                             </div>
                         </div>
                     </div>
@@ -103,7 +103,8 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Create Document</button>
+                    <button type="submit" class="btn btn-primary">Update Document</button>
+                    <input type="hidden" name="document_id" value="{{ $memo->document_id }}">
 
                 </form>
             </div>

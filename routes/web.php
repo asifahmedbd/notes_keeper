@@ -53,6 +53,7 @@ Route::group(['middleware'=> ['auth']],function () {
     Route::post('/store/document', 'DocumentController@store')->name('store.document');
     Route::get('/get/category-structure', 'DocumentController@getCategoryStructure');
     Route::get('/document/edit/{id}', 'DocumentController@edit')->name('document.edit');
+    Route::post('/update/document', 'DocumentController@update')->name('update.document');
 
 
 
