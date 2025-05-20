@@ -269,7 +269,7 @@ class DocumentController extends Controller {
     }
 
     public function update(Request $request){
-        
+        //dd($request->all());
         $request->validate([
             'subject' => 'required|string|max:255',
             'document_text' => 'required|string',
